@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- QR Code lib -->
+    <!-- QR Code lib (conservée pour génération si besoin, mais on utilise image par défaut) -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
         * {
@@ -250,10 +250,6 @@
             font-size: 0.7rem;
             color: #c0a56b;
         }
-        .result-popup.fade-out {
-            opacity: 0;
-            pointer-events: none;
-        }
 
         /* QR colonne redessinée */
         .qr-col {
@@ -492,6 +488,7 @@
                     <span style="font-size:0.7rem;">Aucune image</span>
                 </div>
                 <button id="clearCustomImageBtn" class="btn-small" style="background:#7f5e3a;">Supprimer l'image</button>
+                <button id="resetDefaultQrBtn" class="btn-small" style="background:#2c6e2f; margin-top:8px;">Rétablir l'image par défaut</button>
             </div>
         </div>
         <div><i class="fas fa-list-ul"></i> Liste des pizzas :</div>
@@ -507,7 +504,7 @@
 </div>
 
 <script>
-    // ---------- PIZZAS (noms longs originaux) ----------
+    // ---------- PIZZAS (données complètes avec noms longs originaux) ----------
     const DEFAULT_PIZZAS = [
         { name: "MARGHERITA", desc: "Sauce tomate, basilic, fromage, olives", ingredients: ["sauce tomate","basilic","fromage","olives"] },
         { name: "REGINA", desc: "Sauce tomate, jambon, champignons, fromage, olives", ingredients: ["sauce tomate","jambon","champignons","fromage","olives"] },
@@ -547,7 +544,7 @@
         { name: "CRÉOLE", desc: "Sauce tomate, poulet, ananas, fromage, olives", ingredients: ["sauce tomate","poulet","ananas","fromage","olives"] }
     ];
 
-    // Mapping pour noms raccourcis sur la roue (sans modifier les données originales)
+    // Mapping pour noms raccourcis sur la roue
     const shortNameMap = {
         "CALZONE CLASSIQUE": "CALZ CLAS",
         "CALZONE CHORIZO": "CALZ CHOR",
@@ -582,8 +579,7 @@
 
     let pizzas = JSON.parse(JSON.stringify(DEFAULT_PIZZAS));
     let excludedIngredients = [];
-    let qrUrl = "https://g.page/r/PizzaHumeAvis";
-    let customQRImageData = null;
+    let customQRImageData = null;  // stocke l'image personnalisée (base64)
     let currentRotation = 0, animating = false;
     let canvas, ctx, spinBtn;
     let activePopup = null;
@@ -604,6 +600,7 @@
         return pizzas.filter(p => !p.ingredients.some(ing => excludedIngredients.includes(ing.trim().toLowerCase())));
     }
 
+    // Dessin roue
     function drawWheel() {
         if (!ctx) return;
         const active = getActivePizzas();
@@ -685,10 +682,7 @@
 
     function showResultPopup(pizza) {
         if (!pizza) return;
-        if (activePopup) {
-            activePopup.remove();
-            activePopup = null;
-        }
+        if (activePopup) { activePopup.remove(); activePopup = null; }
         const popup = document.createElement('div');
         popup.className = 'result-popup';
         popup.innerHTML = `
@@ -700,19 +694,13 @@
         document.body.appendChild(popup);
         activePopup = popup;
         const closeHandler = (e) => {
-            if (activePopup) {
-                activePopup.remove();
-                activePopup = null;
-            }
+            if (activePopup) { activePopup.remove(); activePopup = null; }
             document.removeEventListener('click', closeHandler);
             clearTimeout(timeoutId);
         };
         const timeoutId = setTimeout(() => {
-            if (activePopup) {
-                activePopup.remove();
-                activePopup = null;
-                document.removeEventListener('click', closeHandler);
-            }
+            if (activePopup) { activePopup.remove(); activePopup = null; }
+            document.removeEventListener('click', closeHandler);
         }, 20000);
         document.addEventListener('click', closeHandler);
     }
@@ -753,16 +741,16 @@
         targetRot = ((targetRot%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
         let delta = targetRot - (currentRotation%(2*Math.PI));
         const fullSpins = 6*2*Math.PI;
-        animateSpin(currentRotation+delta+fullSpins, 1500, () => {
-            showResultPopup(selectedPizza);
-        });
+        animateSpin(currentRotation+delta+fullSpins, 1500, () => { showResultPopup(selectedPizza); });
     }
 
-    // QR + image
+    // --- GESTION QR CODE : priorité à image custom, sinon image par défaut statique "qr codeee.png" ---
+    const DEFAULT_QR_IMAGE_PATH = "qr codeee.png";
+
     function updateQRDisplay() {
         const container = document.getElementById("qrCodeContainer");
         container.innerHTML = "";
-        if(customQRImageData) {
+        if (customQRImageData) {
             const img = document.createElement("img");
             img.src = customQRImageData;
             img.style.maxWidth = "130px";
@@ -770,20 +758,38 @@
             img.style.borderRadius = "16px";
             container.appendChild(img);
         } else {
-            new QRCode(container, { text: qrUrl, width: 130, height: 130, colorDark:"#000", colorLight:"#fff" });
+            // Image par défaut depuis le serveur
+            const defaultImg = document.createElement("img");
+            defaultImg.src = DEFAULT_QR_IMAGE_PATH;
+            defaultImg.style.maxWidth = "130px";
+            defaultImg.style.maxHeight = "130px";
+            defaultImg.style.borderRadius = "16px";
+            defaultImg.onerror = () => {
+                // fallback si l'image n'existe pas : générer un QR factice
+                container.innerHTML = "";
+                new QRCode(container, { text: "https://pizzahume.fr", width: 130, height: 130, colorDark: "#000", colorLight: "#fff" });
+            };
+            container.appendChild(defaultImg);
         }
     }
-    function saveQRImageToLocal(imageData) {
+
+    function saveCustomImage(imageData) {
         customQRImageData = imageData;
         localStorage.setItem("custom_qr_image", imageData || "");
         updateQRDisplay();
     }
+
     function clearCustomImage() {
         customQRImageData = null;
         localStorage.removeItem("custom_qr_image");
         updateQRDisplay();
         updateModalPreview();
     }
+
+    function resetToDefaultImage() {
+        clearCustomImage();
+    }
+
     function updateModalPreview() {
         const previewDiv = document.getElementById("qrImagePreviewArea");
         if(previewDiv) {
@@ -791,22 +797,41 @@
                 previewDiv.innerHTML = `<img src="${customQRImageData}" style="max-width:80px;"><button id="removePreviewBtn" class="btn-small" style="background:#a33;">Enlever</button>`;
                 document.getElementById("removePreviewBtn")?.addEventListener("click", clearCustomImage);
             } else {
-                previewDiv.innerHTML = `<span style="font-size:0.7rem;">Aucune image personnalisée</span>`;
+                previewDiv.innerHTML = `<span style="font-size:0.7rem;">Aucune image personnalisée (image par défaut)</span>`;
             }
         }
     }
+
     function setupImageUpload() {
         const fileInput = document.getElementById("qrImageUpload");
         if(fileInput) fileInput.addEventListener("change", (e) => {
             const file = e.target.files[0];
             if(file && file.type.startsWith("image/")) {
                 const reader = new FileReader();
-                reader.onload = (ev) => saveQRImageToLocal(ev.target.result);
+                reader.onload = (ev) => saveCustomImage(ev.target.result);
                 reader.readAsDataURL(file);
             } else alert("Format image non supporté");
         });
     }
 
+    // Génération QR depuis URL (remplace l'image custom par un QR généré)
+    function generateQrFromUrl() {
+        let url = document.getElementById("qrUrlAdmin").value.trim();
+        if(!url) return;
+        // On supprime l'image custom pour laisser place au QR généré
+        if(customQRImageData) clearCustomImage();
+        // On affiche un QR classique
+        const container = document.getElementById("qrCodeContainer");
+        container.innerHTML = "";
+        new QRCode(container, { text: url, width: 130, height: 130, colorDark: "#000", colorLight: "#fff" });
+        // On ne stocke pas cette génération dans localStorage car c'est temporaire ? L'utilisateur peut ensuite uploader une image.
+        // Pour persistance, il faudrait stocker l'URL, mais l'utilisateur veut l'image par défaut. On garde le comportement : le QR généré reste jusqu'à rechargement ou upload.
+        // On enregistre quand même un flag pour ne pas perdre le QR généré au rechargement ? Non, au rechargement on reprend l'image par défaut ou custom.
+        // On va simplement stocker le fait qu'on a généré un QR ? Pas nécessaire car l'utilisateur peut réinitialiser.
+        alert("QR généré à partir de l'URL. Pour revenir à l'image par défaut, utilisez le bouton 'Rétablir l'image par défaut'.");
+    }
+
+    // Allergies UI
     function refreshAllergyUI() {
         const container = document.getElementById("allergyBadgesList");
         const allIng = getAllUniqueIngredients();
@@ -837,8 +862,6 @@
         if(saved) pizzas = JSON.parse(saved);
         const savedExcl = localStorage.getItem("excluded_ingredients");
         if(savedExcl) excludedIngredients = JSON.parse(savedExcl);
-        const savedQrUrl = localStorage.getItem("qr_url");
-        if(savedQrUrl) qrUrl = savedQrUrl;
         const savedImage = localStorage.getItem("custom_qr_image");
         if(savedImage && savedImage !== "") customQRImageData = savedImage;
         refreshAllergyUI();
@@ -884,24 +907,17 @@
         }
     }
 
+    // Event listeners
     document.getElementById("openSettingsBtn").onclick = () => {
         renderEditor();
-        document.getElementById("qrUrlAdmin").value = qrUrl;
+        document.getElementById("qrUrlAdmin").value = "";
         updateModalPreview();
         document.getElementById("settingsModal").style.display = "flex";
     };
     document.getElementById("closeModalBtn").onclick = () => document.getElementById("settingsModal").style.display = "none";
-    document.getElementById("saveQrAdminBtn").onclick = () => {
-        let newUrl = document.getElementById("qrUrlAdmin").value.trim();
-        if(newUrl) {
-            qrUrl = newUrl;
-            localStorage.setItem("qr_url", qrUrl);
-            if(customQRImageData) clearCustomImage();
-            updateQRDisplay();
-            alert("QR mis à jour");
-        }
-    };
+    document.getElementById("saveQrAdminBtn").onclick = generateQrFromUrl;
     document.getElementById("clearCustomImageBtn")?.addEventListener("click", clearCustomImage);
+    document.getElementById("resetDefaultQrBtn")?.addEventListener("click", resetToDefaultImage);
     document.getElementById("addNewPizzaBtn").onclick = () => {
         pizzas.push({ name: "Nouvelle pizza", desc: "À personnaliser", ingredients: ["fromage","olives"] });
         renderEditor();
