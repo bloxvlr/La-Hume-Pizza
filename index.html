@@ -374,6 +374,26 @@
         .image-preview { background: #1e1912; border-radius: 24px; padding: 8px; display: flex; align-items: center; justify-content: center; gap: 12px; }
         .fullscreen-btn { background: #2c6e2f; border: none; padding: 10px; border-radius: 40px; color: white; font-weight: bold; width: 100%; margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; }
         .weight-info { font-size: 0.7rem; text-align: center; margin-top: 8px; color: #e0cba0; }
+        .duration-setting {
+            background: #2c2416;
+            border-radius: 32px;
+            padding: 12px 16px;
+            margin: 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .duration-setting label { font-weight: bold; color: #f3bd6a; }
+        .duration-setting input {
+            background: #3a2e1f;
+            border: 1px solid #e67e22;
+            border-radius: 40px;
+            padding: 6px 12px;
+            color: white;
+            width: 80px;
+            text-align: center;
+        }
         footer { text-align: center; margin-top: 16px; font-size: 0.6rem; color: #c2a878; }
         @media (max-width: 900px) {
             .dashboard { flex-wrap: wrap; }
@@ -425,7 +445,7 @@
     <footer>Pizzeria artisanale · La roue décide pour vous</footer>
 </div>
 
-<!-- MODAL PARAMÈTRES (identique) -->
+<!-- MODAL PARAMÈTRES (avec réglage de durée) -->
 <div id="settingsModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -446,6 +466,11 @@
                 <button id="resetDefaultQrBtn" class="btn-small" style="background:#2c6e2f; margin-top:8px;">Rétablir l'image par défaut</button>
             </div>
         </div>
+        <div class="duration-setting">
+            <label><i class="fas fa-clock"></i> Durée de rotation (secondes) :</label>
+            <input type="number" id="rotationDurationInput" min="1" max="8" step="0.5" value="3.0">
+            <span style="font-size:0.8rem;">(1 à 8 secondes)</span>
+        </div>
         <div><i class="fas fa-list-ul"></i> Liste des pizzas (modifier nom, ingrédients, booster, activer/désactiver) :</div>
         <div class="pizza-editor" id="pizzaListEditor"></div>
         <div class="weight-info">✨ Le bouton "Booster" augmente la probabilité de la pizza (x5) par rapport aux non boostées. Plusieurs pizzas peuvent être boostées.</div>
@@ -460,25 +485,25 @@
 </div>
 
 <script>
-    // ---------- NOUVEAU GESTIONNAIRE DE SON POUR LA ROUE ----------
+    // ---------- SON ----------
     let spinAudio = null;
     let fadeInterval = null;
-    let isSpinning = false;
+    let rotationDuration = 3.0; // secondes, valeur par défaut
 
     function startSpinSound() {
         if (spinAudio) {
-            stopSpinSound(); // arrête proprement si déjà en cours
+            stopSpinSoundImmediately(); // on arrête proprement avant de recréer
         }
         spinAudio = new Audio("son roue.mp3");
-        spinAudio.loop = false; // on ne boucle pas, on veut jouer une seule fois pendant la rotation
+        spinAudio.loop = false;
         spinAudio.volume = 1.0;
-        spinAudio.currentTime = 2.0; // démarre à 2 secondes
+        spinAudio.currentTime = 3.0; // démarre à 3 secondes
         spinAudio.play().catch(e => console.log("Erreur lecture son roue", e));
     }
 
     function stopSpinSound() {
         if (spinAudio) {
-            // Fondu progressif sur 300ms
+            // Fondu progressif sur 300ms uniquement à la fin
             const fadeDuration = 300;
             const startVolume = spinAudio.volume;
             const startTime = performance.now();
@@ -489,9 +514,11 @@
                 if (newVolume <= 0.02 || elapsed >= fadeDuration) {
                     clearInterval(fadeInterval);
                     fadeInterval = null;
-                    spinAudio.pause();
-                    spinAudio.currentTime = 0;
-                    spinAudio = null;
+                    if (spinAudio) {
+                        spinAudio.pause();
+                        spinAudio.currentTime = 0;
+                        spinAudio = null;
+                    }
                 } else {
                     if (spinAudio) spinAudio.volume = newVolume;
                 }
@@ -499,7 +526,19 @@
         }
     }
 
-    // ---------- DONNÉES PIZZAS (inchangées) ----------
+    function stopSpinSoundImmediately() {
+        if (fadeInterval) {
+            clearInterval(fadeInterval);
+            fadeInterval = null;
+        }
+        if (spinAudio) {
+            spinAudio.pause();
+            spinAudio.currentTime = 0;
+            spinAudio = null;
+        }
+    }
+
+    // ---------- DONNÉES PIZZAS (toutes actives par défaut) ----------
     const DEFAULT_PIZZAS = [
         { name: "MARGHERITA", desc: "Sauce tomate, basilic, fromage, olives", ingredients: ["sauce tomate","basilic","fromage","olives"], boosted: false, active: true },
         { name: "REGINA", desc: "Sauce tomate, jambon, champignons, fromage, olives", ingredients: ["sauce tomate","jambon","champignons","fromage","olives"], boosted: false, active: true },
@@ -693,7 +732,6 @@
 
     function showResultPopup(pizza) {
         if (!pizza) return;
-        // PLUS AUCUN SON ICI
         if (activePopup) { activePopup.remove(); activePopup = null; }
         const popup = document.createElement('div');
         popup.className = 'result-popup';
@@ -717,14 +755,15 @@
         document.addEventListener('click', closeHandler);
     }
 
-    function animateSpin(targetRot, dur=1400, onComplete=null){
+    function animateSpin(targetRot, onComplete=null){
         if(animating) return;
         animating = true;
         spinBtn.disabled = true;
         const startRot = currentRotation, delta = targetRot-startRot;
         const startTime = performance.now();
+        const durationMs = rotationDuration * 1000;
         function step(now){
-            let t = Math.min(1, (now-startTime)/dur);
+            let t = Math.min(1, (now-startTime)/durationMs);
             const ease = 1-Math.pow(1-t,3);
             currentRotation = startRot+delta*ease;
             drawWheel();
@@ -735,8 +774,7 @@
                 animating=false;
                 spinBtn.disabled=false;
                 if(onComplete) onComplete();
-                // Arrêter le son avec fondu
-                stopSpinSound();
+                stopSpinSound(); // fondu à la fin
             }
         }
         requestAnimationFrame(step);
@@ -744,7 +782,7 @@
 
     function spinWheelRandom(){
         if(animating) return;
-        // Démarrer le son de la roue (démarre à 2 secondes)
+        // Démarrage immédiat du son (pas de fondu au début)
         startSpinSound();
         
         const active = getActivePizzas();
@@ -757,11 +795,11 @@
         let targetRot = arrow - targetMid;
         targetRot = ((targetRot%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
         let delta = targetRot - (currentRotation%(2*Math.PI));
-        const fullSpins = 6*2*Math.PI;
-        animateSpin(currentRotation+delta+fullSpins, 1500, () => { showResultPopup(selectedPizza); });
+        const fullSpins = 6*2*Math.PI; // tours supplémentaires
+        animateSpin(currentRotation+delta+fullSpins, () => { showResultPopup(selectedPizza); });
     }
 
-    // --- GESTION QR CODE (identique) ---
+    // --- GESTION QR CODE ---
     const DEFAULT_QR_IMAGE_PATH = "qr codeee.png";
     function updateQRDisplay() {
         const container = document.getElementById("qrCodeContainer");
@@ -862,6 +900,9 @@
         if(savedExcl) excludedIngredients = JSON.parse(savedExcl);
         const savedImage = localStorage.getItem("custom_qr_image");
         if(savedImage && savedImage !== "") customQRImageData = savedImage;
+        const savedDuration = localStorage.getItem("rotation_duration");
+        if(savedDuration) rotationDuration = parseFloat(savedDuration);
+        document.getElementById("rotationDurationInput").value = rotationDuration;
         refreshAllergyUI();
         drawWheel();
         updateQRDisplay();
@@ -920,7 +961,17 @@
         }
     }
 
-    // Event listeners (identiques)
+    // Sauvegarde de la durée
+    function saveDuration() {
+        let val = parseFloat(document.getElementById("rotationDurationInput").value);
+        if (isNaN(val)) val = 3.0;
+        val = Math.min(8, Math.max(1, val));
+        rotationDuration = val;
+        localStorage.setItem("rotation_duration", rotationDuration);
+        document.getElementById("rotationDurationInput").value = rotationDuration;
+    }
+
+    // Event listeners
     document.getElementById("openSettingsBtn").onclick = () => {
         renderEditor();
         document.getElementById("qrUrlAdmin").value = "";
@@ -941,6 +992,7 @@
     };
     document.getElementById("savePizzaChangesBtn").onclick = () => {
         savePizzas();
+        saveDuration();
         document.getElementById("settingsModal").style.display = "none";
         drawWheel();
         refreshAllergyUI();
@@ -952,6 +1004,7 @@
         drawWheel();
     };
     document.getElementById("fullscreenBtn").onclick = toggleFullscreen;
+    document.getElementById("rotationDurationInput").addEventListener("change", saveDuration);
     const allergenPanelDiv = document.getElementById("allergenPanel");
     const toggleIconSpan = document.getElementById("toggleIcon");
     document.getElementById("allergenToggle").addEventListener("click", () => {
