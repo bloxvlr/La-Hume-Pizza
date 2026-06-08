@@ -1,87 +1,829 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://fonts.googleapis.com/css?family=Poppins:300,600,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/style.css" />
-    <title>PIZZA HUME - Accueil</title>
-  </head>
-  <body>
-    <!-- Top Banner -->
-    <nav class="top-banner">
-      <div class="banner-overlay"></div>
-      <a href="index.html"><img src="https://i.postimg.cc/wvh1nDVW/Logo-Pizza-Humeeeee-500.png" alt="Pizza Hume Logo" class="logo"></a>
-      <ul class="nav-links">
-        <li><a href="index.html" class="active">Accueil</a></li>
-        <li><a href="distributeur.html">Distributeur</a></li>
-        <li><a href="carte.html">La Carte</a></li>
-        <li><a href="charte.html">Charte Qualité</a></li>
-        <li><a href="contact.html">Où nous trouver</a></li>
-      </ul>
-    </nav>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Pizza Hume · La roue qui choisit pour vous</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Librairie QR Code (pour génération par défaut) -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    <!-- Accueil -->
-    <section class="first-section">
-      <div class="info-block">
-        <h1>PIZZA HUME</h1>
-        <p><strong>Pizzas artisanales à emporter<br>commandez au 05 56 66 25 68</strong></p>
-        <p>Venez découvrir nos pizzas réalisées avec des produits frais, une pâte fine et croustillante élaborées tous les jours depuis 2010.</p>
-        <p>Retrouvez-nous au 25 avenue du Maréchal de Lattre de Tassigny 33470 GUJAN MESTRAS</p>
-        <p>Ouvert tous les jours sauf le lundi<br>de 18h à 22h (de 18h à 23h en Juillet et Août)</p>
-        <a href="carte.html" class="btn-primary">Voir la carte</a>
-        <br>
-        <img src="https://i.postimg.cc/HsfC8FHL/3T7A7352-copie-circle.jpg" alt="Pizzeria" class="hero-photo">
-      </div>
-    </section>
+        body {
+            background: #0b0a07;
+            background-image: radial-gradient(circle at 20% 30%, #2a241a 0%, #030201 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            padding: 24px;
+        }
 
-    <!-- Avis Clients -->
-    <section class="reviews-section fade-in">
-        <div class="reviews-header">
-            <h2>Ce que disent nos clients</h2>
-            <p>La satisfaction au coeur de notre métier depuis 2010.</p>
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(3px);
+            border-radius: 56px;
+            padding: 24px 30px 32px;
+            border: 1px solid rgba(230, 57, 70, 0.5);
+            box-shadow: 0 25px 40px -12px black;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+            gap: 15px;
+            border-bottom: 1px dashed #c0392b;
+            padding-bottom: 12px;
+        }
+        .site-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #f5e2c4;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 5px #8b2c1a;
+        }
+        .site-title span { color: #e63946; }
+        .settings-icon {
+            background: #2c241a;
+            border-radius: 60px;
+            padding: 10px 22px;
+            color: #f7d9a0;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #e67e22;
+        }
+        .settings-icon:active { transform: scale(0.96); background: #4a3520; }
+
+        /* Menu allergènes déroulant */
+        .allergen-collapse {
+            background: #1e1912c9;
+            backdrop-filter: blur(12px);
+            border-radius: 48px;
+            margin-bottom: 28px;
+            border: 1px solid #e67e2250;
+            overflow: hidden;
+        }
+        .allergen-header {
+            background: #2a2218;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #ffddb0;
+        }
+        .allergen-badges-container {
+            padding: 18px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-top: 1px solid #e67e2240;
+            background: #15100ac9;
+        }
+        .hidden-panel { display: none; }
+        .ingr-badge {
+            background: #30271e;
+            padding: 8px 18px;
+            border-radius: 60px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #ffefcf;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            border: 1px solid #a97142;
+        }
+        .ingr-badge.excluded {
+            background: #8b2c2c;
+            border-color: #f15a24;
+            text-decoration: line-through;
+            opacity: 0.9;
+        }
+        .reset-filters-btn {
+            background: #3a2c1c;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 40px;
+            color: #ffd9a5;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+            align-items: center;
+        }
+        .wheel-col {
+            flex: 2.5;
+            min-width: 340px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .catchphrase {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(125deg, #f8e3b0, #ffb347);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .wheel-wrapper {
+            position: relative;
+            margin: 16px 0 12px;
+            display: flex;
+            justify-content: center;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            max-width: 620px;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            background: #2d241b;
+            border-radius: 50%;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.7), 0 0 0 6px #e0a45e, 0 0 0 12px #972b1c;
+        }
+        .pointer {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-top: 58px solid #e63946;
+            filter: drop-shadow(0 6px 8px black);
+            z-index: 10;
+        }
+        .pointer i {
+            position: absolute;
+            top: -54px;
+            left: -16px;
+            font-size: 2rem;
+            color: #ffecb3;
+        }
+        .btn-spin {
+            background: linear-gradient(105deg, #e63946, #a5271a);
+            border: none;
+            padding: 12px 28px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border-radius: 60px;
+            color: white;
+            margin: 10px 0 20px;
+            width: auto;
+            min-width: 240px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+        }
+        .btn-spin:active { transform: scale(0.96); }
+        .result-card {
+            background: #0f0c07cc;
+            backdrop-filter: blur(12px);
+            border-radius: 60px;
+            padding: 16px 26px;
+            text-align: center;
+            width: 100%;
+            border-left: 6px solid #f39c12;
+        }
+        .result-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #f5bc70;
+            font-weight: 600;
+        }
+        .pizza-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .pizza-desc { font-size: 0.8rem; color: #e0cba0; }
+
+        .qr-col {
+            flex: 1.2;
+            min-width: 260px;
+            background: #18140ed9;
+            backdrop-filter: blur(8px);
+            border-radius: 52px;
+            padding: 32px 22px;
+            text-align: center;
+            border: 1px solid #e67e2250;
+        }
+        .qr-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #f3bd6a;
+            margin-bottom: 6px;
+        }
+        .qr-sub { color: #d8c8aa; font-size: 0.85rem; margin-bottom: 20px; }
+        .qr-code-container {
+            background: white;
+            padding: 18px;
+            border-radius: 32px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin: 12px 0;
+            min-height: 200px;
+        }
+        .qr-code-container img, .qr-code-container canvas {
+            max-width: 170px;
+            max-height: 170px;
+            width: auto;
+            height: auto;
+            border-radius: 16px;
+        }
+        .note-avis { font-size: 0.7rem; color: #c0a56b; }
+
+        /* Modal paramètres améliorée avec upload image */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(16px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #1d1810;
+            max-width: 780px;
+            width: 90%;
+            max-height: 85vh;
+            border-radius: 56px;
+            padding: 24px;
+            overflow-y: auto;
+            border: 2px solid #e67e22;
+            color: #f1e2ce;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.6rem;
+            font-weight: 700;
+            border-bottom: 2px solid #e63946;
+            margin-bottom: 24px;
+        }
+        .pizza-editor { display: flex; flex-direction: column; gap: 14px; margin: 20px 0; }
+        .pizza-item {
+            background: #2f271c;
+            border-radius: 48px;
+            padding: 12px 18px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+        .pizza-name-input {
+            background: #4e3822;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            flex: 1;
+        }
+        .ingredients-input {
+            background: #3c2c1c;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 40px;
+            flex: 2;
+            font-size: 0.8rem;
+            color: #fae6bf;
+        }
+        .btn-small {
+            background: #e67e22;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .add-pizza { background: #2e7d32; margin-top: 12px; width: 100%; }
+        .qr-settings {
+            background: #2c2416;
+            border-radius: 40px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .image-upload-area {
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .image-preview {
+            background: #1e1912;
+            border-radius: 28px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .image-preview img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 16px;
+            background: white;
+            padding: 4px;
+        }
+        footer { text-align: center; margin-top: 28px; font-size: 0.7rem; color: #c2a878; }
+        button, .ingr-badge, .reset-filters-btn, .settings-icon, .allergen-header { cursor: pointer; }
+        @media (max-width: 720px) {
+            .app-container { padding: 16px; }
+            .catchphrase { font-size: 1.5rem; }
+            .pizza-name { font-size: 1.3rem; }
+            .btn-spin { font-size: 1rem; padding: 10px 20px; min-width: 180px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header-bar">
+        <div class="site-title"><span>🍕</span> PIZZA <span>HUME</span></div>
+        <div class="settings-icon" id="openSettingsBtn">
+            <i class="fas fa-sliders-h"></i> <span>Configurer la carte</span>
         </div>
-        <div class="reviews-grid">
-            <div class="review-card fade-in">
-                <div class="stars">★★★★★</div>
-                <p class="review-text">"Un goût incomparable et une qualité des ingrédient au top ! A essayer au plus vite !"</p>
-                <span class="reviewer-name">Jean-Baptiste Coudroy</span>
+    </div>
+
+    <!-- Menu déroulant allergènes -->
+    <div class="allergen-collapse">
+        <div class="allergen-header" id="allergenToggle">
+            <i class="fas fa-allergies"></i>
+            <span>Exclure des ingrédients (allergies / préférences)</span>
+            <i class="fas fa-chevron-down" id="toggleIcon"></i>
+        </div>
+        <div id="allergenPanel" class="allergen-badges-container hidden-panel">
+            <div id="allergyBadgesList" style="display: flex; flex-wrap: wrap; gap: 10px; width:100%;"></div>
+            <button id="resetFiltersBtn" class="reset-filters-btn"><i class="fas fa-undo-alt"></i> Réinitialiser</button>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <div class="wheel-col">
+            <div class="catchphrase"><i class="fas fa-question-circle"></i> Je n'arrive pas à choisir ?</div>
+            <div class="wheel-wrapper">
+                <canvas id="pizzaCanvas" width="640" height="640"></canvas>
+                <div class="pointer"><i class="fas fa-utensils"></i></div>
             </div>
-            <div class="review-card fade-in">
-                <div class="stars">★★★★★</div>
-                <p class="review-text">"Ils sont non seulement sympathique mais surtout leurs pizzas sont TOUJOURS équivalente, à chaque fois, finesse de la pâte, bonne cuisson, qualité des ingrédients. Allez y sans risque d’etre déçus !!!"</p>
-                <span class="reviewer-name">arnaud ducasse</span>
-            </div>
-            <div class="review-card fade-in">
-                <div class="stars">★★★★★</div>
-                <p class="review-text">"Vraiment les meilleures pizza de gujan/la hume. La qualité des pizzas est meilleure que la plupart des pizzerias du coin, en plus très sympa et bon accueil, je recommande."</p>
-                <span class="reviewer-name">Yann Gabel</span>
-            </div>
-            <div class="review-card fade-in">
-                <div class="stars">★★★★★</div>
-                <p class="review-text">"Très bonne pizza, prix correct et bon accueil, ils sont au top et en plus un distributeur de pizza pour les horaires de nuit c'est parfait, longue vie à votre pizzéria."</p>
-                <span class="reviewer-name">Barbarossa Kakaroto</span>
+            <button class="btn-spin" id="spinBtn"><i class="fas fa-sync-alt"></i> Je tourne la roue</button>
+            <div class="result-card">
+                <div class="result-label"><i class="fas fa-pizza-slice"></i> Pizza désignée par la roue</div>
+                <div class="pizza-name" id="resultPizzaName">MARGHERITA</div>
+                <div class="pizza-desc" id="resultPizzaDesc">Sauce tomate, basilic, fromage, olives</div>
             </div>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="site-footer">
-        <div class="footer-content">
-            <img src="https://i.postimg.cc/wvh1nDVW/Logo-Pizza-Humeeeee-500.png" alt="Pizza Hume Logo" class="footer-logo">
-            <div class="footer-links">
-                <a href="index.html">Accueil</a>
-                <a href="carte.html">La Carte</a>
-                <a href="distributeur.html">Distributeur 24/7</a>
-                <a href="charte.html">Charte Qualité</a>
-                <a href="contact.html">Contact</a>
-            </div>
-            <p>25 avenue du Maréchal de Lattre de Tassigny, 33470 GUJAN MESTRAS | Tél : <a href="tel:0556662568" style="color:#008C45; text-decoration:none;">05 56 66 25 68</a></p>
-            <p>&copy; 2026 Pizza Hume. Tous droits réservés.</p>
+        <div class="qr-col">
+            <div class="qr-title"><i class="fas fa-qrcode"></i> Scannez-moi</div>
+            <div class="qr-sub">Donnez votre avis & partagez</div>
+            <div class="qr-code-container" id="qrCodeContainer"></div>
+            <div class="note-avis"><i class="fas fa-star"></i> Un avis = une recette améliorée</div>
         </div>
-    </footer>
+    </div>
+    <footer>Pizzeria artisanale · Farine italienne · La roue décide pour vous</footer>
+</div>
 
-    <script src="js/script.js"></script>
-  </body>
+<!-- MODAL DE PARAMÉTRAGE AVEC UPLOAD D'IMAGE POUR QR -->
+<div id="settingsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span><i class="fas fa-edit"></i> Éditer la carte & QR</span>
+            <button id="closeModalBtn" style="background: none; border:none; font-size:28px; color:#f0a55a;">&times;</button>
+        </div>
+        <div class="qr-settings">
+            <label><i class="fas fa-link"></i> URL du QR code (avis clients) :</label>
+            <input type="text" id="qrUrlAdmin" style="width:100%; background:#3a2e1f; border:1px solid #e67e22; border-radius:40px; padding:12px; margin:12px 0; color:white;">
+            <button id="saveQrAdminBtn" class="btn-small" style="background:#e67e22;">Générer QR depuis l'URL</button>
+            
+            <div class="image-upload-area">
+                <label><i class="fas fa-image"></i> OU importer une image personnalisée (logo, QR existant) :</label>
+                <input type="file" id="qrImageUpload" accept="image/png, image/jpeg, image/jpg, image/webp">
+                <div class="image-preview" id="qrImagePreviewArea">
+                    <span style="font-size:0.8rem;">Aucune image personnalisée</span>
+                </div>
+                <button id="clearCustomImageBtn" class="btn-small" style="background:#7f5e3a;">Supprimer l'image et revenir au QR URL</button>
+            </div>
+        </div>
+        <div style="font-weight: bold; margin: 10px 0 6px;"><i class="fas fa-list-ul"></i> Liste des pizzas (modifiable)</div>
+        <div class="pizza-editor" id="pizzaListEditor"></div>
+        <button id="addNewPizzaBtn" class="add-pizza btn-small" style="background:#2c6e2f;"><i class="fas fa-plus"></i> Ajouter une pizza</button>
+        <div style="margin: 24px 0; display: flex; gap: 12px; flex-wrap:wrap;">
+            <button id="resetDefaultPizzasBtn" style="background:#c0392b; border:none; padding:10px 18px; border-radius:40px; color:white;"><i class="fas fa-history"></i> Réinitialiser toutes les pizzas</button>
+            <button id="savePizzaChangesBtn" style="background:#27ae60; border:none; padding:10px 24px; border-radius:40px; color:white;"><i class="fas fa-save"></i> Enregistrer modifications</button>
+        </div>
+        <p style="font-size:0.7rem; opacity:0.8;"><i class="fas fa-info-circle"></i> Ingrédients séparés par des virgules. L'image personnalisée sera sauvegardée et réutilisée.</p>
+    </div>
+</div>
+
+<script>
+    // ---------- DONNÉES PIZZAS ----------
+    const DEFAULT_PIZZAS = [
+        { name: "MARGHERITA", desc: "Sauce tomate, basilic, fromage, olives", ingredients: ["sauce tomate","basilic","fromage","olives"] },
+        { name: "REGINA", desc: "Sauce tomate, jambon, champignons, fromage, olives", ingredients: ["sauce tomate","jambon","champignons","fromage","olives"] },
+        { name: "FLAMM’", desc: "Crème fraîche, lardons, oignons, fromage, olives", ingredients: ["crème fraîche","lardons","oignons","fromage","olives"] },
+        { name: "DUCALE", desc: "Sauce tomate, jambon, fromage, olives", ingredients: ["sauce tomate","jambon","fromage","olives"] },
+        { name: "ROYALE", desc: "Sauce tomate, jambon, champignons, lardons, oignons, fromage, olives", ingredients: ["sauce tomate","jambon","champignons","lardons","oignons","fromage","olives"] },
+        { name: "ANTIPASTI", desc: "Sauce tomate, aubergines, poivrons, courgettes, herbes, fromage, olives", ingredients: ["sauce tomate","aubergines","poivrons","courgettes","herbes","fromage","olives"] },
+        { name: "PESTO", desc: "Crème fraîche, tomates confites, pesto, fromage, olives", ingredients: ["crème fraîche","tomates confites","pesto","fromage","olives"] },
+        { name: "4 SAISONS", desc: "Sauce tomate, champignons, poivrons, artichauts, asperges, oignons, fromage, olives", ingredients: ["sauce tomate","champignons","poivrons","artichauts","asperges","oignons","fromage","olives"] },
+        { name: "ROQUETTE", desc: "Crème fraîche, tomates confites, fromage, parmesan, roquette, balsamique", ingredients: ["crème fraîche","tomates confites","fromage","parmesan","roquette","balsamique"] },
+        { name: "CALZONE CLASSIQUE", desc: "Sauce tomate, jambon, champignons, oeufs, fromage", ingredients: ["sauce tomate","jambon","champignons","oeuf","fromage"] },
+        { name: "CALZONE CHORIZO", desc: "Sauce tomate, chorizo, champignons, oeufs, fromage", ingredients: ["sauce tomate","chorizo","champignons","oeuf","fromage"] },
+        { name: "CALZONE CHÈVRE", desc: "Sauce tomate, chèvre, jambon, oeufs, fromage", ingredients: ["sauce tomate","chèvre","jambon","oeuf","fromage"] },
+        { name: "CALZONE BURGER", desc: "Sauce tomate, viande hachée, sauce burger, oignons, cheddar, fromage", ingredients: ["sauce tomate","viande hachée","sauce burger","oignons","cheddar","fromage"] },
+        { name: "CHÈVRE MIEL", desc: "Sauce tomate, chèvre, miel, fromage, olives", ingredients: ["sauce tomate","chèvre","miel","fromage","olives"] },
+        { name: "CAMPAGNARDE", desc: "Sauce tomate, chèvre, jambon, champignons, fromage, olives", ingredients: ["sauce tomate","chèvre","jambon","champignons","fromage","olives"] },
+        { name: "REBLOCHON", desc: "Crème fraîche, reblochon, pommes de terre, lardons, oignons, fromage, olives", ingredients: ["crème fraîche","reblochon","pommes de terre","lardons","oignons","fromage","olives"] },
+        { name: "3 FROMAGES ITALIENS", desc: "Sauce tomate, gorgonzola, parmesan, mozzarella, olives", ingredients: ["sauce tomate","gorgonzola","parmesan","mozzarella","olives"] },
+        { name: "FERMIÈRE", desc: "Crème fraîche, chèvre, lardons, oignons, fromage, olives", ingredients: ["crème fraîche","chèvre","lardons","oignons","fromage","olives"] },
+        { name: "RACLETTE", desc: "Sauce tomate, raclette, lardons, champignons, oignons, fromage, olives", ingredients: ["sauce tomate","raclette","lardons","champignons","oignons","fromage","olives"] },
+        { name: "4 FROMAGES FRANÇAIS", desc: "Sauce tomate, bleu, chèvre, raclette, emmental, olives", ingredients: ["sauce tomate","bleu","chèvre","raclette","emmental","olives"] },
+        { name: "CHORIZO", desc: "Sauce tomate, chorizo, fromage, olives", ingredients: ["sauce tomate","chorizo","fromage","olives"] },
+        { name: "CHORIGUEZ", desc: "Sauce tomate, chorizo, merguez, fromage, olives", ingredients: ["sauce tomate","chorizo","merguez","fromage","olives"] },
+        { name: "ESPAGNOLE", desc: "Sauce tomate, chorizo, poivrons, fromage, olives", ingredients: ["sauce tomate","chorizo","poivrons","fromage","olives"] },
+        { name: "ANDALOUSE", desc: "Sauce tomate, chorizo, champignons, lardons, fromage, olives", ingredients: ["sauce tomate","chorizo","champignons","lardons","fromage","olives"] },
+        { name: "SAUMON", desc: "Crème fraîche, pomme de terre, saumon, aneth, fromage, olives", ingredients: ["crème fraîche","pomme de terre","saumon","aneth","fromage","olives"] },
+        { name: "CAPRI", desc: "Sauce tomate, anchois, oignons, câpres, fromage, olives", ingredients: ["sauce tomate","anchois","oignons","câpres","fromage","olives"] },
+        { name: "SICILIENNE", desc: "Sauce tomate, anchois, origan, fromage, olives", ingredients: ["sauce tomate","anchois","origan","fromage","olives"] },
+        { name: "TUNA", desc: "Crème fraîche, thon, artichauts, fromage, olives", ingredients: ["crème fraîche","thon","artichauts","fromage","olives"] },
+        { name: "BARBECUE", desc: "Crème fraîche, viande hachée, sauce barbecue, oignons, fromage, olives", ingredients: ["crème fraîche","viande hachée","sauce barbecue","oignons","fromage","olives"] },
+        { name: "PARMENTIERE", desc: "Crème fraîche, pomme de terre, viande hachée, lardons, oignons, fromage, olives", ingredients: ["crème fraîche","pomme de terre","viande hachée","lardons","oignons","fromage","olives"] },
+        { name: "BOLOGNAISE", desc: "Sauce tomate, viande hachée, oignons, origan, fromage, olives", ingredients: ["sauce tomate","viande hachée","oignons","origan","fromage","olives"] },
+        { name: "L'ORIENTALE", desc: "Sauce tomate, viande hachée, poivrons, merguez, fromage, olives", ingredients: ["sauce tomate","viande hachée","poivrons","merguez","fromage","olives"] },
+        { name: "BASQUAISE", desc: "Sauce tomate, poulet rôti, poivrons, oignons, piment, fromage, olives", ingredients: ["sauce tomate","poulet","poivrons","oignons","piment","fromage","olives"] },
+        { name: "PROVENÇALE", desc: "Crème fraîche, poulet, tomates confites, herbes, fromage, olives", ingredients: ["crème fraîche","poulet","tomates confites","herbes","fromage","olives"] },
+        { name: "INDIENNE", desc: "Crème fraîche, poulet, curry, champignons, fromage, olives", ingredients: ["crème fraîche","poulet","curry","champignons","fromage","olives"] },
+        { name: "CRÉOLE", desc: "Sauce tomate, poulet, ananas, fromage, olives", ingredients: ["sauce tomate","poulet","ananas","fromage","olives"] }
+    ];
+
+    let pizzas = JSON.parse(JSON.stringify(DEFAULT_PIZZAS));
+    let excludedIngredients = [];
+    let qrUrl = "https://g.page/r/PizzaHumeAvis";
+    let customQRImageData = null; // stocke l'image en base64
+    let currentRotation = 0, animating = false;
+    let canvas, ctx, spinBtn;
+
+    // helpers
+    function getAllUniqueIngredients() {
+        const set = new Set();
+        pizzas.forEach(p => p.ingredients.forEach(i => set.add(i.trim().toLowerCase())));
+        return Array.from(set).sort();
+    }
+    function getActivePizzas() {
+        if (!excludedIngredients.length) return pizzas;
+        return pizzas.filter(p => !p.ingredients.some(ing => excludedIngredients.includes(ing.trim().toLowerCase())));
+    }
+
+    // Dessin roue (textes blancs)
+    function drawWheel() {
+        if (!ctx) return;
+        const active = getActivePizzas();
+        if (active.length === 0) {
+            ctx.fillStyle = "#1e1912";
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "#f8d99c";
+            ctx.font = "bold 18px Inter";
+            ctx.fillText("Aucune pizza disponible", canvas.width/2-130, canvas.height/2);
+            return;
+        }
+        const count = active.length;
+        const angleStep = (Math.PI*2)/count;
+        const cx = canvas.width/2, cy = canvas.height/2;
+        const r = canvas.width * 0.44;
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.save();
+        ctx.translate(cx,cy);
+        ctx.rotate(currentRotation);
+        const colors = ["#B0302A","#2C6E2F","#35281A","#A53F2E","#1C5A2A","#942F1F","#4A3824","#C23B22"];
+        for(let i=0;i<count;i++){
+            const start = i*angleStep;
+            const end = (i+1)*angleStep;
+            ctx.beginPath();
+            ctx.moveTo(0,0);
+            ctx.arc(0,0,r,start,end);
+            ctx.fillStyle = colors[i%colors.length];
+            ctx.fill();
+            ctx.strokeStyle = "#F7D98C";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.save();
+            ctx.rotate(start+angleStep/2);
+            const tr = r*0.7;
+            ctx.font = `bold ${Math.max(13, Math.min(20, r*0.085))}px "Inter"`;
+            ctx.fillStyle = "#FFFFFF";
+            ctx.shadowBlur = 2;
+            let name = active[i].name.length>14 ? active[i].name.substring(0,12)+".." : active[i].name;
+            ctx.fillText(name, tr-20, 7);
+            ctx.restore();
+        }
+        ctx.beginPath();
+        ctx.arc(0,0,r*0.16,0,2*Math.PI);
+        ctx.fillStyle = "#CFA452";
+        ctx.fill();
+        ctx.fillStyle = "#A52A1A";
+        ctx.font = `bold ${r*0.1}px monospace`;
+        ctx.fillText("🍕", -12, 10);
+        ctx.restore();
+        ctx.beginPath();
+        ctx.arc(cx,cy,r+6,0,2*Math.PI);
+        ctx.strokeStyle = "#EC9A3C";
+        ctx.lineWidth = 5;
+        ctx.stroke();
+    }
+    function getCurrentPizzaFromRotation(){
+        const active = getActivePizzas();
+        if(!active.length) return null;
+        const arrow = -Math.PI/2;
+        let raw = arrow - currentRotation;
+        raw = ((raw % (2*Math.PI))+2*Math.PI)%(2*Math.PI);
+        const step = (2*Math.PI)/active.length;
+        let idx = Math.floor(raw/step)%active.length;
+        return active[idx];
+    }
+    function updateResultDisplay(){
+        const p = getCurrentPizzaFromRotation();
+        if(p){
+            document.getElementById("resultPizzaName").innerText = p.name;
+            document.getElementById("resultPizzaDesc").innerText = p.desc;
+        } else {
+            document.getElementById("resultPizzaName").innerText = "Aucune pizza dispo";
+            document.getElementById("resultPizzaDesc").innerText = "Modifiez les exclusions";
+        }
+    }
+    function animateSpin(targetRot, dur=1500){
+        if(animating) return;
+        animating = true;
+        spinBtn.disabled = true;
+        const startRot = currentRotation, delta = targetRot-startRot;
+        const startTime = performance.now();
+        function step(now){
+            let t = Math.min(1, (now-startTime)/dur);
+            const ease = 1-Math.pow(1-t,3);
+            currentRotation = startRot+delta*ease;
+            drawWheel();
+            if(t<1) requestAnimationFrame(step);
+            else {
+                currentRotation = targetRot;
+                drawWheel();
+                updateResultDisplay();
+                animating=false;
+                spinBtn.disabled=false;
+            }
+        }
+        requestAnimationFrame(step);
+    }
+    function spinWheelRandom(){
+        if(animating) return;
+        const active = getActivePizzas();
+        if(active.length===0){ alert("Aucune pizza disponible avec les filtres actuels."); return; }
+        const randIdx = Math.floor(Math.random()*active.length);
+        const arrow = -Math.PI/2;
+        const step = (2*Math.PI)/active.length;
+        const targetMid = step*randIdx+step/2;
+        let targetRot = arrow-targetMid;
+        targetRot = ((targetRot%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
+        let delta = targetRot - (currentRotation%(2*Math.PI));
+        const fullSpins = 7*2*Math.PI;
+        animateSpin(currentRotation+delta+fullSpins,1600);
+    }
+
+    // GESTION QR + IMAGE CUSTOM
+    function updateQRDisplay() {
+        const container = document.getElementById("qrCodeContainer");
+        container.innerHTML = "";
+        if(customQRImageData) {
+            const img = document.createElement("img");
+            img.src = customQRImageData;
+            img.style.maxWidth = "170px";
+            img.style.maxHeight = "170px";
+            img.style.borderRadius = "16px";
+            container.appendChild(img);
+        } else {
+            // générer QR classique
+            new QRCode(container, { text: qrUrl, width: 160, height: 160, colorDark:"#000", colorLight:"#fff" });
+        }
+    }
+    function saveQRImageToLocal(imageData) {
+        customQRImageData = imageData;
+        localStorage.setItem("custom_qr_image", imageData || "");
+        updateQRDisplay();
+    }
+    function clearCustomImage() {
+        customQRImageData = null;
+        localStorage.removeItem("custom_qr_image");
+        updateQRDisplay();
+        // Rafraîchir l'aperçu dans la modale
+        const previewDiv = document.getElementById("qrImagePreviewArea");
+        if(previewDiv) previewDiv.innerHTML = `<span style="font-size:0.8rem;">Aucune image personnalisée</span>`;
+    }
+    // Affichage de l'aperçu dans la modale
+    function updateModalPreview() {
+        const previewDiv = document.getElementById("qrImagePreviewArea");
+        if(previewDiv) {
+            if(customQRImageData) {
+                previewDiv.innerHTML = `<img src="${customQRImageData}" style="max-width:100px;"><button id="removePreviewBtn" class="btn-small" style="background:#a33;">Enlever</button>`;
+                const rmBtn = document.getElementById("removePreviewBtn");
+                if(rmBtn) rmBtn.onclick = () => clearCustomImage();
+            } else {
+                previewDiv.innerHTML = `<span style="font-size:0.8rem;">Aucune image personnalisée</span>`;
+            }
+        }
+    }
+    // Upload image
+    function setupImageUpload() {
+        const fileInput = document.getElementById("qrImageUpload");
+        if(!fileInput) return;
+        fileInput.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if(file && (file.type.startsWith("image/"))) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const base64 = ev.target.result;
+                    saveQRImageToLocal(base64);
+                    updateModalPreview();
+                    // on ferme pas la modale mais on met à jour
+                    alert("Image personnalisée enregistrée !");
+                };
+                reader.readAsDataURL(file);
+            } else { alert("Veuillez sélectionner une image valide (png, jpg)"); }
+        });
+    }
+
+    // Allergies UI
+    function refreshAllergyUI() {
+        const container = document.getElementById("allergyBadgesList");
+        const allIng = getAllUniqueIngredients();
+        container.innerHTML = "";
+        allIng.forEach(ing => {
+            const badge = document.createElement("div");
+            badge.className = `ingr-badge ${excludedIngredients.includes(ing) ? 'excluded' : ''}`;
+            badge.innerHTML = `<i class="fas fa-ban"></i> ${ing}`;
+            badge.addEventListener("click", () => {
+                if(excludedIngredients.includes(ing)) excludedIngredients = excludedIngredients.filter(i=> i!==ing);
+                else excludedIngredients.push(ing);
+                localStorage.setItem("excluded_ingredients", JSON.stringify(excludedIngredients));
+                drawWheel();
+                updateResultDisplay();
+                refreshAllergyUI();
+            });
+            container.appendChild(badge);
+        });
+    }
+    function savePizzas() {
+        localStorage.setItem("pizzeria_pizzas", JSON.stringify(pizzas));
+        drawWheel();
+        updateResultDisplay();
+        refreshAllergyUI();
+    }
+    function loadFromLocal() {
+        const saved = localStorage.getItem("pizzeria_pizzas");
+        if(saved) pizzas = JSON.parse(saved);
+        const savedExcl = localStorage.getItem("excluded_ingredients");
+        if(savedExcl) excludedIngredients = JSON.parse(savedExcl);
+        const savedQrUrl = localStorage.getItem("qr_url");
+        if(savedQrUrl) qrUrl = savedQrUrl;
+        const savedImage = localStorage.getItem("custom_qr_image");
+        if(savedImage && savedImage !== "") customQRImageData = savedImage;
+        refreshAllergyUI();
+        drawWheel();
+        updateResultDisplay();
+        updateQRDisplay();
+    }
+    // Éditeur pizza
+    function renderEditor() {
+        const container = document.getElementById("pizzaListEditor");
+        container.innerHTML = "";
+        pizzas.forEach((pizza, idx) => {
+            const div = document.createElement("div");
+            div.className = "pizza-item";
+            div.innerHTML = `
+                <input class="pizza-name-input" value="${escapeHtml(pizza.name)}" data-idx="${idx}" data-field="name">
+                <input class="ingredients-input" value="${pizza.ingredients.join(", ")}" data-idx="${idx}" data-field="ing">
+                <button class="btn-small remove-pizza" data-idx="${idx}" style="background:#a33;"><i class="fas fa-trash"></i></button>
+            `;
+            container.appendChild(div);
+        });
+        document.querySelectorAll(".pizza-name-input").forEach(inp => inp.addEventListener("change", e => {
+            const idx = parseInt(e.target.dataset.idx);
+            pizzas[idx].name = e.target.value;
+        }));
+        document.querySelectorAll(".ingredients-input").forEach(inp => inp.addEventListener("change", e => {
+            const idx = parseInt(e.target.dataset.idx);
+            const raw = e.target.value;
+            const ingList = raw.split(",").map(s=> s.trim().toLowerCase());
+            pizzas[idx].ingredients = ingList;
+            pizzas[idx].desc = ingList.slice(0,4).join(", ") + (ingList.length>4?"...":"");
+        }));
+        document.querySelectorAll(".remove-pizza").forEach(btn => btn.addEventListener("click", e => {
+            const idx = parseInt(btn.dataset.idx);
+            pizzas.splice(idx,1);
+            renderEditor();
+        }));
+    }
+    function escapeHtml(str) { return str.replace(/[&<>]/g, m=> m==='&'?'&amp;': m==='<'?'&lt;':'&gt;'); }
+
+    // Initialisation Event Listeners
+    document.getElementById("openSettingsBtn").onclick = () => {
+        renderEditor();
+        document.getElementById("qrUrlAdmin").value = qrUrl;
+        updateModalPreview();
+        document.getElementById("settingsModal").style.display = "flex";
+    };
+    document.getElementById("closeModalBtn").onclick = () => document.getElementById("settingsModal").style.display = "none";
+    document.getElementById("saveQrAdminBtn").onclick = () => {
+        let newUrl = document.getElementById("qrUrlAdmin").value.trim();
+        if(newUrl) {
+            qrUrl = newUrl;
+            localStorage.setItem("qr_url", qrUrl);
+            // si une image custom existe, on la supprime pour afficher le nouveau QR ? ou on garde l'image? logique: on laisse l'image prioritaire, mais le bouton "générer QR" supprime l'image perso pour montrer le nouveau QR
+            if(customQRImageData) {
+                clearCustomImage();
+            }
+            updateQRDisplay();
+            alert("QR code mis à jour depuis l'URL");
+        }
+    };
+    document.getElementById("clearCustomImageBtn")?.addEventListener("click", () => clearCustomImage());
+    document.getElementById("addNewPizzaBtn").onclick = () => {
+        pizzas.push({ name: "Nouvelle pizza", desc: "À personnaliser", ingredients: ["fromage","olives"] });
+        renderEditor();
+    };
+    document.getElementById("resetDefaultPizzasBtn").onclick = () => {
+        pizzas = JSON.parse(JSON.stringify(DEFAULT_PIZZAS));
+        renderEditor();
+    };
+    document.getElementById("savePizzaChangesBtn").onclick = () => {
+        savePizzas();
+        document.getElementById("settingsModal").style.display = "none";
+        drawWheel();
+        updateResultDisplay();
+        refreshAllergyUI();
+    };
+    document.getElementById("resetFiltersBtn").onclick = () => {
+        excludedIngredients = [];
+        localStorage.setItem("excluded_ingredients", JSON.stringify([]));
+        refreshAllergyUI();
+        drawWheel();
+        updateResultDisplay();
+    };
+    // accordéon
+    const allergenPanelDiv = document.getElementById("allergenPanel");
+    const toggleIconSpan = document.getElementById("toggleIcon");
+    document.getElementById("allergenToggle").addEventListener("click", () => {
+        allergenPanelDiv.classList.toggle("hidden-panel");
+        toggleIconSpan.classList.toggle("fa-chevron-down");
+        toggleIconSpan.classList.toggle("fa-chevron-up");
+    });
+    window.onload = () => {
+        canvas = document.getElementById("pizzaCanvas");
+        ctx = canvas.getContext("2d");
+        spinBtn = document.getElementById("spinBtn");
+        loadFromLocal();
+        spinBtn.addEventListener("click", spinWheelRandom);
+        setupImageUpload();
+        drawWheel();
+    };
+</script>
+</body>
 </html>
