@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- QR Code lib (conservée pour génération si besoin, mais on utilise image par défaut) -->
+    <!-- QR Code lib -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
         * {
@@ -188,25 +188,101 @@
             font-size: 1.6rem;
             color: #ffecb3;
         }
+
+        /* --- NOUVEAU STYLE POUR LE BOUTON "Je tourne la roue" --- */
         .btn-spin {
-            background: linear-gradient(105deg, #e63946, #a5271a);
-            border: none;
-            padding: 10px 24px;
+            /* Positionnement et style */
+            position: relative;
+            padding: 14px 42px;
             font-size: 1.2rem;
-            font-weight: 700;
-            border-radius: 60px;
-            color: white;
-            margin: 12px 0 0;
-            width: auto;
-            min-width: 220px;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, #e63946, #9b1d2c);
+            border: none;
+            border-radius: 50px;
             cursor: pointer;
-            display: flex;
+            overflow: hidden;
+            
+            /* Animation d'approche et retrait subtil */
+            animation: breathe 3s ease-in-out infinite;
+            
+            /* Transition pour hover */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            
+            /* Ombre subtile */
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+            
+            /* Pour centrer l'icône et le texte */
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            transition: 0.1s;
+            gap: 12px;
+            
+            /* Ajustement marge */
+            margin: 12px 0 0;
+            min-width: 240px;
         }
-        .btn-spin:active { transform: scale(0.96); }
+
+        /* Effet de lueur qui glisse sur le bouton */
+        .btn-spin::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.8), 
+                transparent
+            );
+            pointer-events: none;
+            animation: shine 2s ease-in-out infinite;
+        }
+
+        /* Animation de la lueur */
+        @keyframes shine {
+            0% {
+                left: -100%;
+            }
+            20% {
+                left: 100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        /* Animation subtile d'approche et retrait */
+        @keyframes breathe {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+            }
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 6px 20px rgba(230, 57, 70, 0.6);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+            }
+        }
+
+        /* Effet au survol - renforce l'approche */
+        .btn-spin:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(230, 57, 70, 0.7);
+            background: linear-gradient(135deg, #f04e5d, #b81d30);
+            animation: none; /* On désactive l'animation breathe au hover pour éviter les conflits */
+        }
+
+        /* Effet au clic */
+        .btn-spin:active {
+            transform: scale(0.98);
+            transition: transform 0.1s ease;
+        }
+        /* --- FIN DU NOUVEAU STYLE BOUTON --- */
 
         /* Pop-up résultat */
         .result-popup {
@@ -346,7 +422,7 @@
         }
         .modal-content {
             background: #1d1810;
-            max-width: 720px;
+            max-width: 880px;
             width: 90%;
             max-height: 85vh;
             border-radius: 48px;
@@ -369,6 +445,7 @@
             padding: 8px 12px;
             display: flex;
             flex-wrap: wrap;
+            align-items: center;
             gap: 8px;
         }
         .pizza-name-input {
@@ -377,15 +454,52 @@
             padding: 8px 12px;
             border-radius: 30px;
             color: white;
-            flex: 1;
+            flex: 2;
+            min-width: 100px;
         }
         .ingredients-input {
             background: #3c2c1c;
             border: none;
             padding: 8px 12px;
             border-radius: 30px;
-            flex: 2;
+            flex: 3;
             font-size: 0.75rem;
+        }
+        .pizza-booster {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #1e1912;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            color: #e0cba0;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .pizza-booster.boosted {
+            background: #e67e22;
+            color: #1e1912;
+            font-weight: bold;
+        }
+        .pizza-booster i {
+            font-size: 0.8rem;
+        }
+        .pizza-active-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #1e1912;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            color: #e0cba0;
+        }
+        .pizza-active-toggle input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #2e7d32;
         }
         .btn-small {
             background: #e67e22;
@@ -419,11 +533,18 @@
             gap: 10px;
             cursor: pointer;
         }
+        .weight-info {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 8px;
+            color: #e0cba0;
+        }
         footer { text-align: center; margin-top: 16px; font-size: 0.6rem; color: #c2a878; }
         @media (max-width: 900px) {
             .dashboard { flex-wrap: wrap; }
             .wheel-col { flex: 1; min-width: 280px; }
             .catchphrase { white-space: normal; font-size: 1.3rem; }
+            .btn-spin { padding: 12px 32px; font-size: 1rem; min-width: 200px; }
         }
     </style>
 </head>
@@ -479,7 +600,7 @@
         </div>
         <div class="qr-settings">
             <label><i class="fas fa-link"></i> URL du QR code (avis) :</label>
-            <input type="text" id="qrUrlAdmin" style="width:100%; background:#3a2e1f; border:1px solid #e67e22; border-radius:40px; padding:10px; margin:10px 0; color:white;">
+            <input type="text" id="qrUrlAdmin" style="width:100%; background:#3a2e1f; border:1px solid #e67e22; border-radius:40px; padding:10px; margin:10px 0; color:white;" placeholder="https://...">
             <button id="saveQrAdminBtn" class="btn-small" style="background:#e67e22;">Générer QR depuis l'URL</button>
             <div class="image-upload-area">
                 <label><i class="fas fa-image"></i> OU importer une image personnalisée :</label>
@@ -491,57 +612,58 @@
                 <button id="resetDefaultQrBtn" class="btn-small" style="background:#2c6e2f; margin-top:8px;">Rétablir l'image par défaut</button>
             </div>
         </div>
-        <div><i class="fas fa-list-ul"></i> Liste des pizzas :</div>
+        <div><i class="fas fa-list-ul"></i> Liste des pizzas (modifier nom, ingrédients, booster, activer/désactiver) :</div>
         <div class="pizza-editor" id="pizzaListEditor"></div>
+        <div class="weight-info">✨ Le bouton "Booster" augmente la probabilité de la pizza (x5) par rapport aux non boostées. Plusieurs pizzas peuvent être boostées.</div>
         <button id="addNewPizzaBtn" class="add-pizza btn-small" style="background:#2c6e2f;"><i class="fas fa-plus"></i> Ajouter une pizza</button>
         <div style="margin: 16px 0; display: flex; gap: 10px; flex-wrap:wrap;">
             <button id="resetDefaultPizzasBtn" style="background:#c0392b; border:none; padding:8px 16px; border-radius:40px; color:white;"><i class="fas fa-history"></i> Réinitialiser</button>
             <button id="savePizzaChangesBtn" style="background:#27ae60; border:none; padding:8px 20px; border-radius:40px; color:white;"><i class="fas fa-save"></i> Enregistrer</button>
         </div>
         <button id="fullscreenBtn" class="fullscreen-btn"><i class="fas fa-expand"></i> Mode plein écran</button>
-        <p style="font-size:0.65rem; margin-top:12px;"><i class="fas fa-info-circle"></i> Ingrédients séparés par virgules. L'image personnalisée est sauvegardée.</p>
+        <p style="font-size:0.65rem; margin-top:12px;"><i class="fas fa-info-circle"></i> Ingrédients séparés par virgules. Pizza désactivée = cachée de la roue. Booster = plus de chances.</p>
     </div>
 </div>
 
 <script>
-    // ---------- PIZZAS (données complètes avec noms longs originaux) ----------
+    // ---------- PIZZAS (avec booster booléen, plus de poids) ----------
     const DEFAULT_PIZZAS = [
-        { name: "MARGHERITA", desc: "Sauce tomate, basilic, fromage, olives", ingredients: ["sauce tomate","basilic","fromage","olives"] },
-        { name: "REGINA", desc: "Sauce tomate, jambon, champignons, fromage, olives", ingredients: ["sauce tomate","jambon","champignons","fromage","olives"] },
-        { name: "FLAMM’", desc: "Crème fraîche, lardons, oignons, fromage, olives", ingredients: ["crème fraîche","lardons","oignons","fromage","olives"] },
-        { name: "DUCALE", desc: "Sauce tomate, jambon, fromage, olives", ingredients: ["sauce tomate","jambon","fromage","olives"] },
-        { name: "ROYALE", desc: "Sauce tomate, jambon, champignons, lardons, oignons, fromage, olives", ingredients: ["sauce tomate","jambon","champignons","lardons","oignons","fromage","olives"] },
-        { name: "ANTIPASTI", desc: "Sauce tomate, aubergines, poivrons, courgettes, herbes, fromage, olives", ingredients: ["sauce tomate","aubergines","poivrons","courgettes","herbes","fromage","olives"] },
-        { name: "PESTO", desc: "Crème fraîche, tomates confites, pesto, fromage, olives", ingredients: ["crème fraîche","tomates confites","pesto","fromage","olives"] },
-        { name: "4 SAISONS", desc: "Sauce tomate, champignons, poivrons, artichauts, asperges, oignons, fromage, olives", ingredients: ["sauce tomate","champignons","poivrons","artichauts","asperges","oignons","fromage","olives"] },
-        { name: "ROQUETTE", desc: "Crème fraîche, tomates confites, fromage, parmesan, roquette, balsamique", ingredients: ["crème fraîche","tomates confites","fromage","parmesan","roquette","balsamique"] },
-        { name: "CALZONE CLASSIQUE", desc: "Sauce tomate, jambon, champignons, oeufs, fromage", ingredients: ["sauce tomate","jambon","champignons","oeuf","fromage"] },
-        { name: "CALZONE CHORIZO", desc: "Sauce tomate, chorizo, champignons, oeufs, fromage", ingredients: ["sauce tomate","chorizo","champignons","oeuf","fromage"] },
-        { name: "CALZONE CHÈVRE", desc: "Sauce tomate, chèvre, jambon, oeufs, fromage", ingredients: ["sauce tomate","chèvre","jambon","oeuf","fromage"] },
-        { name: "CALZONE BURGER", desc: "Sauce tomate, viande hachée, sauce burger, oignons, cheddar, fromage", ingredients: ["sauce tomate","viande hachée","sauce burger","oignons","cheddar","fromage"] },
-        { name: "CHÈVRE MIEL", desc: "Sauce tomate, chèvre, miel, fromage, olives", ingredients: ["sauce tomate","chèvre","miel","fromage","olives"] },
-        { name: "CAMPAGNARDE", desc: "Sauce tomate, chèvre, jambon, champignons, fromage, olives", ingredients: ["sauce tomate","chèvre","jambon","champignons","fromage","olives"] },
-        { name: "REBLOCHON", desc: "Crème fraîche, reblochon, pommes de terre, lardons, oignons, fromage, olives", ingredients: ["crème fraîche","reblochon","pommes de terre","lardons","oignons","fromage","olives"] },
-        { name: "3 FROMAGES ITALIENS", desc: "Sauce tomate, gorgonzola, parmesan, mozzarella, olives", ingredients: ["sauce tomate","gorgonzola","parmesan","mozzarella","olives"] },
-        { name: "FERMIÈRE", desc: "Crème fraîche, chèvre, lardons, oignons, fromage, olives", ingredients: ["crème fraîche","chèvre","lardons","oignons","fromage","olives"] },
-        { name: "RACLETTE", desc: "Sauce tomate, raclette, lardons, champignons, oignons, fromage, olives", ingredients: ["sauce tomate","raclette","lardons","champignons","oignons","fromage","olives"] },
-        { name: "4 FROMAGES FRANÇAIS", desc: "Sauce tomate, bleu, chèvre, raclette, emmental, olives", ingredients: ["sauce tomate","bleu","chèvre","raclette","emmental","olives"] },
-        { name: "CHORIZO", desc: "Sauce tomate, chorizo, fromage, olives", ingredients: ["sauce tomate","chorizo","fromage","olives"] },
-        { name: "CHORIGUEZ", desc: "Sauce tomate, chorizo, merguez, fromage, olives", ingredients: ["sauce tomate","chorizo","merguez","fromage","olives"] },
-        { name: "ESPAGNOLE", desc: "Sauce tomate, chorizo, poivrons, fromage, olives", ingredients: ["sauce tomate","chorizo","poivrons","fromage","olives"] },
-        { name: "ANDALOUSE", desc: "Sauce tomate, chorizo, champignons, lardons, fromage, olives", ingredients: ["sauce tomate","chorizo","champignons","lardons","fromage","olives"] },
-        { name: "SAUMON", desc: "Crème fraîche, pomme de terre, saumon, aneth, fromage, olives", ingredients: ["crème fraîche","pomme de terre","saumon","aneth","fromage","olives"] },
-        { name: "CAPRI", desc: "Sauce tomate, anchois, oignons, câpres, fromage, olives", ingredients: ["sauce tomate","anchois","oignons","câpres","fromage","olives"] },
-        { name: "SICILIENNE", desc: "Sauce tomate, anchois, origan, fromage, olives", ingredients: ["sauce tomate","anchois","origan","fromage","olives"] },
-        { name: "TUNA", desc: "Crème fraîche, thon, artichauts, fromage, olives", ingredients: ["crème fraîche","thon","artichauts","fromage","olives"] },
-        { name: "BARBECUE", desc: "Crème fraîche, viande hachée, sauce barbecue, oignons, fromage, olives", ingredients: ["crème fraîche","viande hachée","sauce barbecue","oignons","fromage","olives"] },
-        { name: "PARMENTIERE", desc: "Crème fraîche, pomme de terre, viande hachée, lardons, oignons, fromage, olives", ingredients: ["crème fraîche","pomme de terre","viande hachée","lardons","oignons","fromage","olives"] },
-        { name: "BOLOGNAISE", desc: "Sauce tomate, viande hachée, oignons, origan, fromage, olives", ingredients: ["sauce tomate","viande hachée","oignons","origan","fromage","olives"] },
-        { name: "L'ORIENTALE", desc: "Sauce tomate, viande hachée, poivrons, merguez, fromage, olives", ingredients: ["sauce tomate","viande hachée","poivrons","merguez","fromage","olives"] },
-        { name: "BASQUAISE", desc: "Sauce tomate, poulet rôti, poivrons, oignons, piment, fromage, olives", ingredients: ["sauce tomate","poulet","poivrons","oignons","piment","fromage","olives"] },
-        { name: "PROVENÇALE", desc: "Crème fraîche, poulet, tomates confites, herbes, fromage, olives", ingredients: ["crème fraîche","poulet","tomates confites","herbes","fromage","olives"] },
-        { name: "INDIENNE", desc: "Crème fraîche, poulet, curry, champignons, fromage, olives", ingredients: ["crème fraîche","poulet","curry","champignons","fromage","olives"] },
-        { name: "CRÉOLE", desc: "Sauce tomate, poulet, ananas, fromage, olives", ingredients: ["sauce tomate","poulet","ananas","fromage","olives"] }
+        { name: "MARGHERITA", desc: "Sauce tomate, basilic, fromage, olives", ingredients: ["sauce tomate","basilic","fromage","olives"], boosted: false, active: true },
+        { name: "REGINA", desc: "Sauce tomate, jambon, champignons, fromage, olives", ingredients: ["sauce tomate","jambon","champignons","fromage","olives"], boosted: false, active: true },
+        { name: "FLAMM’", desc: "Crème fraîche, lardons, oignons, fromage, olives", ingredients: ["crème fraîche","lardons","oignons","fromage","olives"], boosted: false, active: true },
+        { name: "DUCALE", desc: "Sauce tomate, jambon, fromage, olives", ingredients: ["sauce tomate","jambon","fromage","olives"], boosted: false, active: true },
+        { name: "ROYALE", desc: "Sauce tomate, jambon, champignons, lardons, oignons, fromage, olives", ingredients: ["sauce tomate","jambon","champignons","lardons","oignons","fromage","olives"], boosted: false, active: true },
+        { name: "ANTIPASTI", desc: "Sauce tomate, aubergines, poivrons, courgettes, herbes, fromage, olives", ingredients: ["sauce tomate","aubergines","poivrons","courgettes","herbes","fromage","olives"], boosted: false, active: true },
+        { name: "PESTO", desc: "Crème fraîche, tomates confites, pesto, fromage, olives", ingredients: ["crème fraîche","tomates confites","pesto","fromage","olives"], boosted: false, active: true },
+        { name: "4 SAISONS", desc: "Sauce tomate, champignons, poivrons, artichauts, asperges, oignons, fromage, olives", ingredients: ["sauce tomate","champignons","poivrons","artichauts","asperges","oignons","fromage","olives"], boosted: false, active: true },
+        { name: "ROQUETTE", desc: "Crème fraîche, tomates confites, fromage, parmesan, roquette, balsamique", ingredients: ["crème fraîche","tomates confites","fromage","parmesan","roquette","balsamique"], boosted: false, active: true },
+        { name: "CALZONE CLASSIQUE", desc: "Sauce tomate, jambon, champignons, oeufs, fromage", ingredients: ["sauce tomate","jambon","champignons","oeuf","fromage"], boosted: false, active: true },
+        { name: "CALZONE CHORIZO", desc: "Sauce tomate, chorizo, champignons, oeufs, fromage", ingredients: ["sauce tomate","chorizo","champignons","oeuf","fromage"], boosted: false, active: true },
+        { name: "CALZONE CHÈVRE", desc: "Sauce tomate, chèvre, jambon, oeufs, fromage", ingredients: ["sauce tomate","chèvre","jambon","oeuf","fromage"], boosted: false, active: true },
+        { name: "CALZONE BURGER", desc: "Sauce tomate, viande hachée, sauce burger, oignons, cheddar, fromage", ingredients: ["sauce tomate","viande hachée","sauce burger","oignons","cheddar","fromage"], boosted: false, active: true },
+        { name: "CHÈVRE MIEL", desc: "Sauce tomate, chèvre, miel, fromage, olives", ingredients: ["sauce tomate","chèvre","miel","fromage","olives"], boosted: false, active: true },
+        { name: "CAMPAGNARDE", desc: "Sauce tomate, chèvre, jambon, champignons, fromage, olives", ingredients: ["sauce tomate","chèvre","jambon","champignons","fromage","olives"], boosted: false, active: true },
+        { name: "REBLOCHON", desc: "Crème fraîche, reblochon, pommes de terre, lardons, oignons, fromage, olives", ingredients: ["crème fraîche","reblochon","pommes de terre","lardons","oignons","fromage","olives"], boosted: false, active: true },
+        { name: "3 FROMAGES ITALIENS", desc: "Sauce tomate, gorgonzola, parmesan, mozzarella, olives", ingredients: ["sauce tomate","gorgonzola","parmesan","mozzarella","olives"], boosted: false, active: true },
+        { name: "FERMIÈRE", desc: "Crème fraîche, chèvre, lardons, oignons, fromage, olives", ingredients: ["crème fraîche","chèvre","lardons","oignons","fromage","olives"], boosted: false, active: true },
+        { name: "RACLETTE", desc: "Sauce tomate, raclette, lardons, champignons, oignons, fromage, olives", ingredients: ["sauce tomate","raclette","lardons","champignons","oignons","fromage","olives"], boosted: false, active: true },
+        { name: "4 FROMAGES FRANÇAIS", desc: "Sauce tomate, bleu, chèvre, raclette, emmental, olives", ingredients: ["sauce tomate","bleu","chèvre","raclette","emmental","olives"], boosted: false, active: true },
+        { name: "CHORIZO", desc: "Sauce tomate, chorizo, fromage, olives", ingredients: ["sauce tomate","chorizo","fromage","olives"], boosted: false, active: true },
+        { name: "CHORIGUEZ", desc: "Sauce tomate, chorizo, merguez, fromage, olives", ingredients: ["sauce tomate","chorizo","merguez","fromage","olives"], boosted: false, active: true },
+        { name: "ESPAGNOLE", desc: "Sauce tomate, chorizo, poivrons, fromage, olives", ingredients: ["sauce tomate","chorizo","poivrons","fromage","olives"], boosted: false, active: true },
+        { name: "ANDALOUSE", desc: "Sauce tomate, chorizo, champignons, lardons, fromage, olives", ingredients: ["sauce tomate","chorizo","champignons","lardons","fromage","olives"], boosted: false, active: true },
+        { name: "SAUMON", desc: "Crème fraîche, pomme de terre, saumon, aneth, fromage, olives", ingredients: ["crème fraîche","pomme de terre","saumon","aneth","fromage","olives"], boosted: false, active: true },
+        { name: "CAPRI", desc: "Sauce tomate, anchois, oignons, câpres, fromage, olives", ingredients: ["sauce tomate","anchois","oignons","câpres","fromage","olives"], boosted: false, active: true },
+        { name: "SICILIENNE", desc: "Sauce tomate, anchois, origan, fromage, olives", ingredients: ["sauce tomate","anchois","origan","fromage","olives"], boosted: false, active: true },
+        { name: "TUNA", desc: "Crème fraîche, thon, artichauts, fromage, olives", ingredients: ["crème fraîche","thon","artichauts","fromage","olives"], boosted: false, active: true },
+        { name: "BARBECUE", desc: "Crème fraîche, viande hachée, sauce barbecue, oignons, fromage, olives", ingredients: ["crème fraîche","viande hachée","sauce barbecue","oignons","fromage","olives"], boosted: false, active: true },
+        { name: "PARMENTIERE", desc: "Crème fraîche, pomme de terre, viande hachée, lardons, oignons, fromage, olives", ingredients: ["crème fraîche","pomme de terre","viande hachée","lardons","oignons","fromage","olives"], boosted: false, active: true },
+        { name: "BOLOGNAISE", desc: "Sauce tomate, viande hachée, oignons, origan, fromage, olives", ingredients: ["sauce tomate","viande hachée","oignons","origan","fromage","olives"], boosted: false, active: true },
+        { name: "L'ORIENTALE", desc: "Sauce tomate, viande hachée, poivrons, merguez, fromage, olives", ingredients: ["sauce tomate","viande hachée","poivrons","merguez","fromage","olives"], boosted: false, active: true },
+        { name: "BASQUAISE", desc: "Sauce tomate, poulet rôti, poivrons, oignons, piment, fromage, olives", ingredients: ["sauce tomate","poulet","poivrons","oignons","piment","fromage","olives"], boosted: false, active: true },
+        { name: "PROVENÇALE", desc: "Crème fraîche, poulet, tomates confites, herbes, fromage, olives", ingredients: ["crème fraîche","poulet","tomates confites","herbes","fromage","olives"], boosted: false, active: true },
+        { name: "INDIENNE", desc: "Crème fraîche, poulet, curry, champignons, fromage, olives", ingredients: ["crème fraîche","poulet","curry","champignons","fromage","olives"], boosted: false, active: true },
+        { name: "CRÉOLE", desc: "Sauce tomate, poulet, ananas, fromage, olives", ingredients: ["sauce tomate","poulet","ananas","fromage","olives"], boosted: false, active: true }
     ];
 
     // Mapping pour noms raccourcis sur la roue
@@ -579,7 +701,7 @@
 
     let pizzas = JSON.parse(JSON.stringify(DEFAULT_PIZZAS));
     let excludedIngredients = [];
-    let customQRImageData = null;  // stocke l'image personnalisée (base64)
+    let customQRImageData = null;
     let currentRotation = 0, animating = false;
     let canvas, ctx, spinBtn;
     let activePopup = null;
@@ -595,12 +717,29 @@
         pizzas.forEach(p => p.ingredients.forEach(i => set.add(i.trim().toLowerCase())));
         return Array.from(set).sort();
     }
+
     function getActivePizzas() {
-        if (!excludedIngredients.length) return pizzas;
-        return pizzas.filter(p => !p.ingredients.some(ing => excludedIngredients.includes(ing.trim().toLowerCase())));
+        let filtered = pizzas.filter(p => p.active === true);
+        if (excludedIngredients.length) {
+            filtered = filtered.filter(p => !p.ingredients.some(ing => excludedIngredients.includes(ing.trim().toLowerCase())));
+        }
+        return filtered;
     }
 
-    // Dessin roue
+    function getWeightedRandomIndex(pizzaArray) {
+        if (!pizzaArray.length) return -1;
+        let totalWeight = 0;
+        const weights = pizzaArray.map(p => p.boosted ? 5 : 1);
+        totalWeight = weights.reduce((a,b) => a+b, 0);
+        let random = Math.random() * totalWeight;
+        let accumulator = 0;
+        for (let i = 0; i < pizzaArray.length; i++) {
+            accumulator += weights[i];
+            if (random <= accumulator) return i;
+        }
+        return 0;
+    }
+
     function drawWheel() {
         if (!ctx) return;
         const active = getActivePizzas();
@@ -609,7 +748,7 @@
             ctx.fillRect(0,0,canvas.width,canvas.height);
             ctx.fillStyle = "#f8d99c";
             ctx.font = "bold 16px Inter";
-            ctx.fillText("Aucune pizza dispo", canvas.width/2-100, canvas.height/2);
+            ctx.fillText("Aucune pizza disponible", canvas.width/2-130, canvas.height/2);
             return;
         }
         const count = active.length;
@@ -731,22 +870,21 @@
     function spinWheelRandom(){
         if(animating) return;
         const active = getActivePizzas();
-        if(active.length===0){ alert("Aucune pizza disponible avec ces filtres"); return; }
-        const randIdx = Math.floor(Math.random()*active.length);
-        const selectedPizza = active[randIdx];
+        if(active.length===0){ alert("Aucune pizza disponible. Vérifiez les filtres ou activez des pizzas dans les paramètres."); return; }
+        const selectedIndex = getWeightedRandomIndex(active);
+        const selectedPizza = active[selectedIndex];
         const arrow = -Math.PI/2;
         const step = (2*Math.PI)/active.length;
-        const targetMid = step*randIdx+step/2;
-        let targetRot = arrow-targetMid;
+        const targetMid = step * selectedIndex + step/2;
+        let targetRot = arrow - targetMid;
         targetRot = ((targetRot%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
         let delta = targetRot - (currentRotation%(2*Math.PI));
         const fullSpins = 6*2*Math.PI;
         animateSpin(currentRotation+delta+fullSpins, 1500, () => { showResultPopup(selectedPizza); });
     }
 
-    // --- GESTION QR CODE : priorité à image custom, sinon image par défaut statique "qr codeee.png" ---
+    // --- GESTION QR CODE ---
     const DEFAULT_QR_IMAGE_PATH = "qr codeee.png";
-
     function updateQRDisplay() {
         const container = document.getElementById("qrCodeContainer");
         container.innerHTML = "";
@@ -758,38 +896,30 @@
             img.style.borderRadius = "16px";
             container.appendChild(img);
         } else {
-            // Image par défaut depuis le serveur
             const defaultImg = document.createElement("img");
             defaultImg.src = DEFAULT_QR_IMAGE_PATH;
             defaultImg.style.maxWidth = "130px";
             defaultImg.style.maxHeight = "130px";
             defaultImg.style.borderRadius = "16px";
             defaultImg.onerror = () => {
-                // fallback si l'image n'existe pas : générer un QR factice
                 container.innerHTML = "";
                 new QRCode(container, { text: "https://pizzahume.fr", width: 130, height: 130, colorDark: "#000", colorLight: "#fff" });
             };
             container.appendChild(defaultImg);
         }
     }
-
     function saveCustomImage(imageData) {
         customQRImageData = imageData;
         localStorage.setItem("custom_qr_image", imageData || "");
         updateQRDisplay();
     }
-
     function clearCustomImage() {
         customQRImageData = null;
         localStorage.removeItem("custom_qr_image");
         updateQRDisplay();
         updateModalPreview();
     }
-
-    function resetToDefaultImage() {
-        clearCustomImage();
-    }
-
+    function resetToDefaultImage() { clearCustomImage(); }
     function updateModalPreview() {
         const previewDiv = document.getElementById("qrImagePreviewArea");
         if(previewDiv) {
@@ -801,7 +931,6 @@
             }
         }
     }
-
     function setupImageUpload() {
         const fileInput = document.getElementById("qrImageUpload");
         if(fileInput) fileInput.addEventListener("change", (e) => {
@@ -813,22 +942,14 @@
             } else alert("Format image non supporté");
         });
     }
-
-    // Génération QR depuis URL (remplace l'image custom par un QR généré)
     function generateQrFromUrl() {
         let url = document.getElementById("qrUrlAdmin").value.trim();
         if(!url) return;
-        // On supprime l'image custom pour laisser place au QR généré
         if(customQRImageData) clearCustomImage();
-        // On affiche un QR classique
         const container = document.getElementById("qrCodeContainer");
         container.innerHTML = "";
         new QRCode(container, { text: url, width: 130, height: 130, colorDark: "#000", colorLight: "#fff" });
-        // On ne stocke pas cette génération dans localStorage car c'est temporaire ? L'utilisateur peut ensuite uploader une image.
-        // Pour persistance, il faudrait stocker l'URL, mais l'utilisateur veut l'image par défaut. On garde le comportement : le QR généré reste jusqu'à rechargement ou upload.
-        // On enregistre quand même un flag pour ne pas perdre le QR généré au rechargement ? Non, au rechargement on reprend l'image par défaut ou custom.
-        // On va simplement stocker le fait qu'on a généré un QR ? Pas nécessaire car l'utilisateur peut réinitialiser.
-        alert("QR généré à partir de l'URL. Pour revenir à l'image par défaut, utilisez le bouton 'Rétablir l'image par défaut'.");
+        alert("QR généré à partir de l'URL. Pour revenir à l'image par défaut, utilisez le bouton 'Rétablir'.");
     }
 
     // Allergies UI
@@ -876,8 +997,14 @@
             const div = document.createElement("div");
             div.className = "pizza-item";
             div.innerHTML = `
-                <input class="pizza-name-input" value="${escapeHtml(pizza.name)}" data-idx="${idx}">
-                <input class="ingredients-input" value="${pizza.ingredients.join(", ")}" data-idx="${idx}">
+                <input class="pizza-name-input" value="${escapeHtml(pizza.name)}" data-idx="${idx}" style="flex:2">
+                <input class="ingredients-input" value="${pizza.ingredients.join(", ")}" data-idx="${idx}" style="flex:3">
+                <div class="pizza-booster ${pizza.boosted ? 'boosted' : ''}" data-idx="${idx}">
+                    <i class="fas fa-rocket"></i> ${pizza.boosted ? 'Boosté ✓' : 'Booster'}
+                </div>
+                <label class="pizza-active-toggle">
+                    <input type="checkbox" class="pizza-active-checkbox" data-idx="${idx}" ${pizza.active ? 'checked' : ''}> Actif
+                </label>
                 <button class="btn-small remove-pizza" data-idx="${idx}" style="background:#a33;"><i class="fas fa-trash"></i></button>
             `;
             container.appendChild(div);
@@ -891,6 +1018,15 @@
             const ingList = raw.split(",").map(s=> s.trim().toLowerCase());
             pizzas[idx].ingredients = ingList;
             pizzas[idx].desc = ingList.slice(0,4).join(", ") + (ingList.length>4?"...":"");
+        }));
+        document.querySelectorAll(".pizza-booster").forEach(btn => btn.addEventListener("click", e => {
+            const idx = parseInt(btn.dataset.idx);
+            pizzas[idx].boosted = !pizzas[idx].boosted;
+            renderEditor();
+        }));
+        document.querySelectorAll(".pizza-active-checkbox").forEach(cb => cb.addEventListener("change", e => {
+            const idx = parseInt(e.target.dataset.idx);
+            pizzas[idx].active = e.target.checked;
         }));
         document.querySelectorAll(".remove-pizza").forEach(btn => btn.addEventListener("click", e => {
             pizzas.splice(parseInt(btn.dataset.idx),1);
@@ -919,7 +1055,7 @@
     document.getElementById("clearCustomImageBtn")?.addEventListener("click", clearCustomImage);
     document.getElementById("resetDefaultQrBtn")?.addEventListener("click", resetToDefaultImage);
     document.getElementById("addNewPizzaBtn").onclick = () => {
-        pizzas.push({ name: "Nouvelle pizza", desc: "À personnaliser", ingredients: ["fromage","olives"] });
+        pizzas.push({ name: "Nouvelle pizza", desc: "À personnaliser", ingredients: ["fromage","olives"], boosted: false, active: true });
         renderEditor();
     };
     document.getElementById("resetDefaultPizzasBtn").onclick = () => {
