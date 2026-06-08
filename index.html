@@ -626,7 +626,12 @@
 </div>
 
 <script>
-    // ---------- PIZZAS (avec booster booléen, plus de poids) ----------
+    // ---------- SON ----------
+    const spinSound = new Audio("ui sound.mp3");
+    // Gérer silencieusement les erreurs de chargement
+    spinSound.addEventListener('error', (e) => console.log("Audio non trouvé ou erreur de lecture"));
+    
+    // ---------- PIZZAS (avec booster booléen) ----------
     const DEFAULT_PIZZAS = [
         { name: "MARGHERITA", desc: "Sauce tomate, basilic, fromage, olives", ingredients: ["sauce tomate","basilic","fromage","olives"], boosted: false, active: true },
         { name: "REGINA", desc: "Sauce tomate, jambon, champignons, fromage, olives", ingredients: ["sauce tomate","jambon","champignons","fromage","olives"], boosted: false, active: true },
@@ -821,6 +826,9 @@
 
     function showResultPopup(pizza) {
         if (!pizza) return;
+        // --- JOUER LE SON QUAND LA POPUP APPARAÎT ---
+        spinSound.play().catch(e => console.log("Erreur lecture son popup", e));
+        
         if (activePopup) { activePopup.remove(); activePopup = null; }
         const popup = document.createElement('div');
         popup.className = 'result-popup';
@@ -869,6 +877,9 @@
 
     function spinWheelRandom(){
         if(animating) return;
+        // --- JOUER LE SON AU CLIC SUR LE BOUTON ---
+        spinSound.play().catch(e => console.log("Erreur lecture son bouton", e));
+        
         const active = getActivePizzas();
         if(active.length===0){ alert("Aucune pizza disponible. Vérifiez les filtres ou activez des pizzas dans les paramètres."); return; }
         const selectedIndex = getWeightedRandomIndex(active);
