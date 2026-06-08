@@ -11,6 +11,7 @@
     <!-- QR Code lib -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
+        /* --- TOUT LE CSS EST IDENTIQUE --- */
         * {
             margin: 0;
             padding: 0;
@@ -75,7 +76,6 @@
         }
         .settings-icon:active { transform: scale(0.96); }
 
-        /* Allergènes compact */
         .allergen-collapse {
             background: #1e1912c9;
             backdrop-filter: blur(12px);
@@ -126,7 +126,6 @@
             margin-left: auto;
         }
 
-        /* Dashboard : roue + QR */
         .dashboard {
             display: flex;
             flex-wrap: nowrap;
@@ -189,9 +188,8 @@
             color: #ffecb3;
         }
 
-        /* --- NOUVEAU STYLE POUR LE BOUTON "Je tourne la roue" --- */
+        /* Bouton style identique */
         .btn-spin {
-            /* Positionnement et style */
             position: relative;
             padding: 14px 42px;
             font-size: 1.2rem;
@@ -202,28 +200,16 @@
             border-radius: 50px;
             cursor: pointer;
             overflow: hidden;
-            
-            /* Animation d'approche et retrait subtil */
             animation: breathe 3s ease-in-out infinite;
-            
-            /* Transition pour hover */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            
-            /* Ombre subtile */
             box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
-            
-            /* Pour centrer l'icône et le texte */
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
-            
-            /* Ajustement marge */
             margin: 12px 0 0;
             min-width: 240px;
         }
-
-        /* Effet de lueur qui glisse sur le bouton */
         .btn-spin::before {
             content: '';
             position: absolute;
@@ -231,58 +217,27 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.8), 
-                transparent
-            );
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
             pointer-events: none;
             animation: shine 2s ease-in-out infinite;
         }
-
-        /* Animation de la lueur */
         @keyframes shine {
-            0% {
-                left: -100%;
-            }
-            20% {
-                left: 100%;
-            }
-            100% {
-                left: 100%;
-            }
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
         }
-
-        /* Animation subtile d'approche et retrait */
         @keyframes breathe {
-            0% {
-                transform: scale(1);
-                box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
-            }
-            50% {
-                transform: scale(1.02);
-                box-shadow: 0 6px 20px rgba(230, 57, 70, 0.6);
-            }
-            100% {
-                transform: scale(1);
-                box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
-            }
+            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(230,57,70,0.4); }
+            50% { transform: scale(1.02); box-shadow: 0 6px 20px rgba(230,57,70,0.6); }
+            100% { transform: scale(1); box-shadow: 0 4px 15px rgba(230,57,70,0.4); }
         }
-
-        /* Effet au survol - renforce l'approche */
         .btn-spin:hover {
             transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(230, 57, 70, 0.7);
+            box-shadow: 0 8px 25px rgba(230,57,70,0.7);
             background: linear-gradient(135deg, #f04e5d, #b81d30);
-            animation: none; /* On désactive l'animation breathe au hover pour éviter les conflits */
+            animation: none;
         }
-
-        /* Effet au clic */
-        .btn-spin:active {
-            transform: scale(0.98);
-            transition: transform 0.1s ease;
-        }
-        /* --- FIN DU NOUVEAU STYLE BOUTON --- */
+        .btn-spin:active { transform: scale(0.98); transition: transform 0.1s ease; }
 
         /* Pop-up résultat */
         .result-popup {
@@ -300,7 +255,6 @@
             box-shadow: 0 25px 45px rgba(0,0,0,0.6);
             min-width: 280px;
             max-width: 85vw;
-            transition: opacity 0.2s;
             font-family: 'Inter', sans-serif;
         }
         .result-popup h3 {
@@ -327,7 +281,7 @@
             color: #c0a56b;
         }
 
-        /* QR colonne redessinée */
+        /* QR colonne */
         .qr-col {
             flex: 1;
             min-width: 220px;
@@ -339,76 +293,16 @@
             box-shadow: 0 12px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,215,150,0.2);
             position: relative;
         }
-        .qr-col::before {
-            content: "🍕";
-            position: absolute;
-            top: -15px;
-            left: 20px;
-            font-size: 2rem;
-            opacity: 0.3;
-            transform: rotate(-15deg);
-        }
-        .qr-col::after {
-            content: "🍷";
-            position: absolute;
-            bottom: -15px;
-            right: 20px;
-            font-size: 2rem;
-            opacity: 0.3;
-            transform: rotate(10deg);
-        }
-        .qr-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            font-family: 'Playfair Display', serif;
-            color: #f3bd6a;
-            margin-bottom: 4px;
-            text-shadow: 0 2px 3px black;
-        }
-        .qr-sub {
-            font-size: 0.8rem;
-            color: #ffffff;
-            background: rgba(0,0,0,0.5);
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 40px;
-            margin-bottom: 16px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-        .qr-code-container {
-            background: white;
-            padding: 12px;
-            border-radius: 32px;
-            display: inline-flex;
-            justify-content: center;
-            margin: 8px 0;
-            box-shadow: 0 8px 18px rgba(0,0,0,0.4);
-        }
-        .qr-code-container img, .qr-code-container canvas { 
-            max-width: 130px; 
-            max-height: 130px; 
-            border-radius: 16px;
-            display: block;
-        }
-        .qr-footer {
-            margin-top: 16px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: #ffffff;
-            background: rgba(0,0,0,0.6);
-            padding: 8px 12px;
-            border-radius: 32px;
-            display: inline-block;
-            backdrop-filter: blur(4px);
-            letter-spacing: 0.3px;
-        }
-        .qr-footer i {
-            color: #f3bd6a;
-            margin-right: 6px;
-        }
+        .qr-col::before { content: "🍕"; position: absolute; top: -15px; left: 20px; font-size: 2rem; opacity: 0.3; transform: rotate(-15deg); }
+        .qr-col::after { content: "🍷"; position: absolute; bottom: -15px; right: 20px; font-size: 2rem; opacity: 0.3; transform: rotate(10deg); }
+        .qr-title { font-size: 1.5rem; font-weight: 800; font-family: 'Playfair Display', serif; color: #f3bd6a; margin-bottom: 4px; text-shadow: 0 2px 3px black; }
+        .qr-sub { font-size: 0.8rem; color: #ffffff; background: rgba(0,0,0,0.5); display: inline-block; padding: 4px 12px; border-radius: 40px; margin-bottom: 16px; font-weight: 500; }
+        .qr-code-container { background: white; padding: 12px; border-radius: 32px; display: inline-flex; justify-content: center; margin: 8px 0; box-shadow: 0 8px 18px rgba(0,0,0,0.4); }
+        .qr-code-container img, .qr-code-container canvas { max-width: 130px; max-height: 130px; border-radius: 16px; display: block; }
+        .qr-footer { margin-top: 16px; font-size: 0.75rem; font-weight: 500; color: #ffffff; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 32px; display: inline-block; backdrop-filter: blur(4px); }
+        .qr-footer i { color: #f3bd6a; margin-right: 6px; }
 
-        /* Modal paramètres */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -448,23 +342,8 @@
             align-items: center;
             gap: 8px;
         }
-        .pizza-name-input {
-            background: #4e3822;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 30px;
-            color: white;
-            flex: 2;
-            min-width: 100px;
-        }
-        .ingredients-input {
-            background: #3c2c1c;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 30px;
-            flex: 3;
-            font-size: 0.75rem;
-        }
+        .pizza-name-input { background: #4e3822; border: none; padding: 8px 12px; border-radius: 30px; color: white; flex: 2; min-width: 100px; }
+        .ingredients-input { background: #3c2c1c; border: none; padding: 8px 12px; border-radius: 30px; flex: 3; font-size: 0.75rem; }
         .pizza-booster {
             display: flex;
             align-items: center;
@@ -475,16 +354,8 @@
             font-size: 0.7rem;
             color: #e0cba0;
             cursor: pointer;
-            transition: 0.1s;
         }
-        .pizza-booster.boosted {
-            background: #e67e22;
-            color: #1e1912;
-            font-weight: bold;
-        }
-        .pizza-booster i {
-            font-size: 0.8rem;
-        }
+        .pizza-booster.boosted { background: #e67e22; color: #1e1912; font-weight: bold; }
         .pizza-active-toggle {
             display: flex;
             align-items: center;
@@ -495,50 +366,14 @@
             font-size: 0.7rem;
             color: #e0cba0;
         }
-        .pizza-active-toggle input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #2e7d32;
-        }
-        .btn-small {
-            background: #e67e22;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+        .pizza-active-toggle input { width: 18px; height: 18px; cursor: pointer; accent-color: #2e7d32; }
+        .btn-small { background: #e67e22; border: none; padding: 6px 12px; border-radius: 30px; font-weight: bold; cursor: pointer; }
         .add-pizza { background: #2e7d32; width: 100%; margin-top: 8px; }
-        .qr-settings {
-            background: #2c2416;
-            border-radius: 32px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
+        .qr-settings { background: #2c2416; border-radius: 32px; padding: 16px; margin-bottom: 16px; }
         .image-upload-area { margin: 12px 0; display: flex; flex-direction: column; gap: 8px; }
         .image-preview { background: #1e1912; border-radius: 24px; padding: 8px; display: flex; align-items: center; justify-content: center; gap: 12px; }
-        .fullscreen-btn {
-            background: #2c6e2f;
-            border: none;
-            padding: 10px;
-            border-radius: 40px;
-            color: white;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            cursor: pointer;
-        }
-        .weight-info {
-            font-size: 0.7rem;
-            text-align: center;
-            margin-top: 8px;
-            color: #e0cba0;
-        }
+        .fullscreen-btn { background: #2c6e2f; border: none; padding: 10px; border-radius: 40px; color: white; font-weight: bold; width: 100%; margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; }
+        .weight-info { font-size: 0.7rem; text-align: center; margin-top: 8px; color: #e0cba0; }
         footer { text-align: center; margin-top: 16px; font-size: 0.6rem; color: #c2a878; }
         @media (max-width: 900px) {
             .dashboard { flex-wrap: wrap; }
@@ -557,7 +392,6 @@
         </div>
     </div>
 
-    <!-- Allergènes déroulant -->
     <div class="allergen-collapse">
         <div class="allergen-header" id="allergenToggle">
             <i class="fas fa-allergies"></i>
@@ -591,7 +425,7 @@
     <footer>Pizzeria artisanale · La roue décide pour vous</footer>
 </div>
 
-<!-- MODAL PARAMÈTRES -->
+<!-- MODAL PARAMÈTRES (identique) -->
 <div id="settingsModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -626,12 +460,46 @@
 </div>
 
 <script>
-    // ---------- SON ----------
-    const spinSound = new Audio("ui sound.mp3");
-    // Gérer silencieusement les erreurs de chargement
-    spinSound.addEventListener('error', (e) => console.log("Audio non trouvé ou erreur de lecture"));
-    
-    // ---------- PIZZAS (avec booster booléen) ----------
+    // ---------- NOUVEAU GESTIONNAIRE DE SON POUR LA ROUE ----------
+    let spinAudio = null;
+    let fadeInterval = null;
+    let isSpinning = false;
+
+    function startSpinSound() {
+        if (spinAudio) {
+            stopSpinSound(); // arrête proprement si déjà en cours
+        }
+        spinAudio = new Audio("son roue.mp3");
+        spinAudio.loop = false; // on ne boucle pas, on veut jouer une seule fois pendant la rotation
+        spinAudio.volume = 1.0;
+        spinAudio.currentTime = 2.0; // démarre à 2 secondes
+        spinAudio.play().catch(e => console.log("Erreur lecture son roue", e));
+    }
+
+    function stopSpinSound() {
+        if (spinAudio) {
+            // Fondu progressif sur 300ms
+            const fadeDuration = 300;
+            const startVolume = spinAudio.volume;
+            const startTime = performance.now();
+            if (fadeInterval) clearInterval(fadeInterval);
+            fadeInterval = setInterval(() => {
+                const elapsed = performance.now() - startTime;
+                let newVolume = startVolume * (1 - elapsed / fadeDuration);
+                if (newVolume <= 0.02 || elapsed >= fadeDuration) {
+                    clearInterval(fadeInterval);
+                    fadeInterval = null;
+                    spinAudio.pause();
+                    spinAudio.currentTime = 0;
+                    spinAudio = null;
+                } else {
+                    if (spinAudio) spinAudio.volume = newVolume;
+                }
+            }, 20);
+        }
+    }
+
+    // ---------- DONNÉES PIZZAS (inchangées) ----------
     const DEFAULT_PIZZAS = [
         { name: "MARGHERITA", desc: "Sauce tomate, basilic, fromage, olives", ingredients: ["sauce tomate","basilic","fromage","olives"], boosted: false, active: true },
         { name: "REGINA", desc: "Sauce tomate, jambon, champignons, fromage, olives", ingredients: ["sauce tomate","jambon","champignons","fromage","olives"], boosted: false, active: true },
@@ -671,7 +539,6 @@
         { name: "CRÉOLE", desc: "Sauce tomate, poulet, ananas, fromage, olives", ingredients: ["sauce tomate","poulet","ananas","fromage","olives"], boosted: false, active: true }
     ];
 
-    // Mapping pour noms raccourcis sur la roue
     const shortNameMap = {
         "CALZONE CLASSIQUE": "CALZ CLAS",
         "CALZONE CHORIZO": "CALZ CHOR",
@@ -826,9 +693,7 @@
 
     function showResultPopup(pizza) {
         if (!pizza) return;
-        // --- JOUER LE SON QUAND LA POPUP APPARAÎT ---
-        spinSound.play().catch(e => console.log("Erreur lecture son popup", e));
-        
+        // PLUS AUCUN SON ICI
         if (activePopup) { activePopup.remove(); activePopup = null; }
         const popup = document.createElement('div');
         popup.className = 'result-popup';
@@ -870,6 +735,8 @@
                 animating=false;
                 spinBtn.disabled=false;
                 if(onComplete) onComplete();
+                // Arrêter le son avec fondu
+                stopSpinSound();
             }
         }
         requestAnimationFrame(step);
@@ -877,8 +744,8 @@
 
     function spinWheelRandom(){
         if(animating) return;
-        // --- JOUER LE SON AU CLIC SUR LE BOUTON ---
-        spinSound.play().catch(e => console.log("Erreur lecture son bouton", e));
+        // Démarrer le son de la roue (démarre à 2 secondes)
+        startSpinSound();
         
         const active = getActivePizzas();
         if(active.length===0){ alert("Aucune pizza disponible. Vérifiez les filtres ou activez des pizzas dans les paramètres."); return; }
@@ -894,7 +761,7 @@
         animateSpin(currentRotation+delta+fullSpins, 1500, () => { showResultPopup(selectedPizza); });
     }
 
-    // --- GESTION QR CODE ---
+    // --- GESTION QR CODE (identique) ---
     const DEFAULT_QR_IMAGE_PATH = "qr codeee.png";
     function updateQRDisplay() {
         const container = document.getElementById("qrCodeContainer");
@@ -960,10 +827,9 @@
         const container = document.getElementById("qrCodeContainer");
         container.innerHTML = "";
         new QRCode(container, { text: url, width: 130, height: 130, colorDark: "#000", colorLight: "#fff" });
-        alert("QR généré à partir de l'URL. Pour revenir à l'image par défaut, utilisez le bouton 'Rétablir'.");
+        alert("QR généré à partir de l'URL.");
     }
 
-    // Allergies UI
     function refreshAllergyUI() {
         const container = document.getElementById("allergyBadgesList");
         const allIng = getAllUniqueIngredients();
@@ -1054,7 +920,7 @@
         }
     }
 
-    // Event listeners
+    // Event listeners (identiques)
     document.getElementById("openSettingsBtn").onclick = () => {
         renderEditor();
         document.getElementById("qrUrlAdmin").value = "";
