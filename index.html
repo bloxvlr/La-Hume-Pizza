@@ -445,7 +445,7 @@
     <footer>Pizzeria artisanale · La roue décide pour vous</footer>
 </div>
 
-<!-- MODAL PARAMÈTRES (avec réglage de durée) -->
+<!-- MODAL PARAMÈTRES -->
 <div id="settingsModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -488,22 +488,21 @@
     // ---------- SON ----------
     let spinAudio = null;
     let fadeInterval = null;
-    let rotationDuration = 3.0; // secondes, valeur par défaut
+    let rotationDuration = 3.0;
 
     function startSpinSound() {
         if (spinAudio) {
-            stopSpinSoundImmediately(); // on arrête proprement avant de recréer
+            stopSpinSoundImmediately();
         }
         spinAudio = new Audio("son roue.mp3");
         spinAudio.loop = false;
         spinAudio.volume = 1.0;
-        spinAudio.currentTime = 3.0; // démarre à 3 secondes
+        spinAudio.currentTime = 3.0;
         spinAudio.play().catch(e => console.log("Erreur lecture son roue", e));
     }
 
     function stopSpinSound() {
         if (spinAudio) {
-            // Fondu progressif sur 300ms uniquement à la fin
             const fadeDuration = 300;
             const startVolume = spinAudio.volume;
             const startTime = performance.now();
@@ -774,7 +773,7 @@
                 animating=false;
                 spinBtn.disabled=false;
                 if(onComplete) onComplete();
-                stopSpinSound(); // fondu à la fin
+                stopSpinSound();
             }
         }
         requestAnimationFrame(step);
@@ -782,9 +781,7 @@
 
     function spinWheelRandom(){
         if(animating) return;
-        // Démarrage immédiat du son (pas de fondu au début)
         startSpinSound();
-        
         const active = getActivePizzas();
         if(active.length===0){ alert("Aucune pizza disponible. Vérifiez les filtres ou activez des pizzas dans les paramètres."); return; }
         const selectedIndex = getWeightedRandomIndex(active);
@@ -795,7 +792,7 @@
         let targetRot = arrow - targetMid;
         targetRot = ((targetRot%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
         let delta = targetRot - (currentRotation%(2*Math.PI));
-        const fullSpins = 6*2*Math.PI; // tours supplémentaires
+        const fullSpins = 6*2*Math.PI;
         animateSpin(currentRotation+delta+fullSpins, () => { showResultPopup(selectedPizza); });
     }
 
@@ -895,7 +892,16 @@
 
     function loadFromLocal() {
         const saved = localStorage.getItem("pizzeria_pizzas");
-        if(saved) pizzas = JSON.parse(saved);
+        if (saved) {
+            const savedPizzas = JSON.parse(saved);
+            // On force toutes les pizzas à active = true au chargement
+            pizzas = savedPizzas.map(p => ({ ...p, active: true }));
+        } else {
+            pizzas = JSON.parse(JSON.stringify(DEFAULT_PIZZAS));
+        }
+        // Vérification supplémentaire : si une pizza n'a pas le champ active, on le met à true
+        pizzas = pizzas.map(p => ({ ...p, active: true }));
+        
         const savedExcl = localStorage.getItem("excluded_ingredients");
         if(savedExcl) excludedIngredients = JSON.parse(savedExcl);
         const savedImage = localStorage.getItem("custom_qr_image");
@@ -961,7 +967,6 @@
         }
     }
 
-    // Sauvegarde de la durée
     function saveDuration() {
         let val = parseFloat(document.getElementById("rotationDurationInput").value);
         if (isNaN(val)) val = 3.0;
@@ -971,7 +976,6 @@
         document.getElementById("rotationDurationInput").value = rotationDuration;
     }
 
-    // Event listeners
     document.getElementById("openSettingsBtn").onclick = () => {
         renderEditor();
         document.getElementById("qrUrlAdmin").value = "";
